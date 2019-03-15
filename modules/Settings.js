@@ -31,28 +31,8 @@ export default class Settings {
 		this.scriptName = settingsConfig.scriptName;
 		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
 		this.size = settingsConfig.size;
-		this.saveMessage = `Settings for ${this.scriptName} saved.`;
+		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
-	}
-
-	/** Save settings
-	 * Only saves unique settings, i.e settings that are different from the default
-	 */
-	save() {
-		mw.loader.using( 'mediawiki.api' ).then( () => {
-			this.API = new mw.Api( {
-				ajax: {
-					headers: {
-						'Api-User-Agent': `Script ${this.scriptName} using libSettings.`
-					}
-				}
-			} );
-			this.API.saveOption( this.optionName, JSON.stringify( /* ?*/ ) ).then( () => {
-				mw.notify( this.saveMessage );
-			}, () => {
-				mw.notify( this.saveFailMessage );
-			} );
-		} );
 	}
 
 	/** Get settings
@@ -73,6 +53,23 @@ export default class Settings {
 		return this.options;
 	}
 
+	/** Save settings
+	 * Only saves unique settings, i.e settings that are different from the default
+	 * @returns {Promise}
+	 */
+	save() {
+		return mw.loader.using( 'mediawiki.api' ).then( () => {
+			this.API = new mw.Api( {
+				ajax: {
+					headers: {
+						'Api-User-Agent': `Script ${this.scriptName} using libSettings.`
+					}
+				}
+			} );
+			return this.API.saveOption( this.optionName, JSON.stringify( '' ) );
+		} );
+	}
+
 	/* Traverse through this.optionsConfig and get the values inputed by the user into the
 	 * settings menu */
 	getInputedValues() {
@@ -87,7 +84,7 @@ export default class Settings {
 				Temp.super.call( this, name, config );
 				// eslint-disable-next-line no-restricted-syntax
 				element.preferences.forEach( ( option ) => {
-					this.$element.append( option.buildUI().$element );
+					this.$element.append( option.UI().$element );
 				} );
 			};
 
@@ -122,6 +119,22 @@ export default class Settings {
 			SettingsDialog.super.prototype.initialize.call( this );
 			this.content = booklet;
 			this.$body.append( this.content.$element );
+		};
+
+		const self = this;
+		SettingsDialog.prototype.getActionProcess = function ( action ) {
+			if ( action ) {
+				return new OO.ui.Process( () => {
+					self.save().then( () => {
+						mw.notify( self.saveMessage );
+					}, () => {
+						mw.notify( self.saveFailMessage );
+					} ).always( () => {
+						this.close( { action: action } );
+					} );
+				} );
+			}
+			return SettingsDialog.parent.prototype.getActionProcess.call( this, action );
 		};
 
 		/* SettingsDialog.prototype.getBodyHeight = function () {

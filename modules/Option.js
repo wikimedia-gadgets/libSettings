@@ -4,7 +4,7 @@ import libSettings from 'HelperFunctions.js';
  * @param {Object} config
  * @property {string} config.name Name of option. (required)
  * @property {*} config.defaultValue (required)
- * @property {string} config.text Text displayed in settings. (required)
+ * @property {string} config.label Text displayed in settings. (required)
  * @property {string} config.helptip Help text shown in settings.
  * @property {Array} config.possibleValues Either [ <value>, .. ] or
  *  [ [ <InternalValue>, <ValueDisplayedInSettings> ], .. ].
@@ -31,9 +31,12 @@ export default class Option {
 				this.possibleSettingsVal = this.possibleValues.values();
 		}
 		this.label = config.label;
+		this.helptip = config.helptip;
 		this.type = type;
 		this.basetypes = basetypes;
 		this.value = this.defaultValue;
+		this.FieldLayout = true;
+		this.helpinline = true || config.helpinline; // TODO would want to be able to set all
 		this.validate( this.defaultValue, 'error' );
 		// TODO: pseudocode
 		// on ( 'savesettingsevent', update() )
@@ -92,6 +95,13 @@ export default class Option {
 	 */
 	buildUI() {
 		return libSettings.error( `buildUI not defined by extending class ${this.type}Option.` );
+	}
+
+	UI() {
+		const out = this.buildUI();
+		return this.FieldLayout ?
+			new OO.ui.FieldLayout( out, { label: this.label, help: this.helptip, helpinline: this.helpinline, align: 'inline' } ) :
+			out;
 	}
 
 	/**

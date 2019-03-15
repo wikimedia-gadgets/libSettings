@@ -16,6 +16,12 @@ const optionsConfig = [
 				label: 'Allow additions to redirects',
 				helptip: 'When checked, redirects will have ',
 				defaultValue: true
+			} ),
+			new BooleanOption( {
+				name: 'AddWikidata',
+				label: 'Upload to wikidata when adding a short description.',
+				helptip: 'When checked.. ',
+				defaultValue: true
 			} ) /*
 			new StringOption( {
 				name: 'SaveWikidata',
