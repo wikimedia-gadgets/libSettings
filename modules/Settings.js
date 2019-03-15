@@ -79,6 +79,58 @@ export default class Settings {
 	}
 
 	display() {
+		mw.loader.using( 'oojs-ui-core', 'oojs-ui-windows' ).then( () => {
+			this.displayMain();
+		} );
+	}
 
+	displayMain() {
+		// Creating and opening a simple dialog window.
+
+		// Subclass Dialog class. Note that the OOjs inheritClass() method extends the parent constructor's prototype and static methods and properties to the child constructor.
+
+		function MyDialog( config ) {
+			MyDialog.super.call( this, config );
+		}
+		OO.inheritClass( MyDialog, OO.ui.Dialog );
+
+		// Specify a name for .addWindows()
+		MyDialog.static.name = 'myDialog';
+		// Specify a title statically (or, alternatively, with data passed to the opening() method).
+		MyDialog.static.title = 'Simple dialog';
+
+		// Customize the initialize() function: This is where to add content to the dialog body and set up event handlers.
+		MyDialog.prototype.initialize = function () {
+		// Call the parent method
+			MyDialog.super.prototype.initialize.call( this );
+			// Create and append a layout and some content.
+			this.content = new OO.ui.PanelLayout( {
+				padded: true,
+				expanded: false
+			} );
+			this.content.$element.append( '<p>A simple dialog window. Press \'Esc\' to close. </p>' );
+			this.$body.append( this.content.$element );
+		};
+
+		// Override the getBodyHeight() method to specify a custom height (or don't to use the automatically generated height)
+		MyDialog.prototype.getBodyHeight = function () {
+			return this.content.$element.outerHeight( true );
+		};
+
+		// Make the window.
+		const myDialog = new MyDialog( {
+			size: 'medium'
+		} );
+
+		// Create and append a window manager, which will open and close the window.
+		const windowManager = new OO.ui.WindowManager();
+		// eslint-disable-next-line jquery/no-global-selector
+		$( 'body' ).append( windowManager.$element );
+
+		// Add the window to the window manager using the addWindows() method.
+		windowManager.addWindows( [ myDialog ] );
+
+		// Open the window!
+		windowManager.openWindow( myDialog );
 	}
 }
