@@ -22,28 +22,16 @@ export default class Settings {
 	) {
 		// optionsConfig
 		this.optionsConfig = optionsConfig;
-		this.defaultOptions = this.traverse( optionsConfig ).forEach( ( option ) => {
-			// option.
+		this.defaultOptions = {};
+		this.optionsConfig.foreach( ( element ) => {
+			element.preferences.forEach( ( option ) => {
+				this.defaultOptions[ option.name ] = option.defaultValue;
+			} );
 		} );
-		/* MAYBE FIXME: Check for duplicate names of options in optionsConfig
-		 * - must be completely unique
-		this.optionsConfig.foreach( ( element.preferences ) => {
-			element.preferences.some ( ( optionElement ) => {
-				optionElement.
-			}
-		} ); */
-
 		this.scriptName = settingsConfig.scriptName;
 		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
 		this.saveMessage = `Settings for ${this.scriptName} saved.`;
 		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
-	}
-
-	/* Function to get all the [@link Option] objects inside optionsConfig */
-	traverse() {
-		this.optionsConfig.forEach( ( element ) => {
-			return element;
-		} );
 	}
 
 	/** Save settings

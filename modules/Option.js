@@ -80,7 +80,10 @@ export default class Option {
 
 	/**
 	 * Build UI.
-	 * @return {OO.ui.element} //TODO could also be a  mw.widget..how generic can the UI element returned be
+	 * @return {OO.ui.element}
+	 * //TODO could also be a  mw.widget..how generic can the UI element returned be
+	 * prolly create a standard for what functions must be defined by output?
+	 * i.e, must satisfy certain portions of OO.ui.element to work
 	 * before we can't build the settings menu with it?
 	 */
 	buildUI() {
