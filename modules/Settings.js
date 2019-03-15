@@ -122,7 +122,8 @@ export default class Settings {
 
 		SettingsDialog.prototype.initialize = function () {
 			SettingsDialog.super.prototype.initialize.call( this );
-			this.$body.append( booklet.$element );
+			this.content = booklet;
+			this.$body.append( this.content.$element );
 		};
 
 		/* SettingsDialog.prototype.getBodyHeight = function () {
@@ -130,7 +131,7 @@ export default class Settings {
 		};*/
 
 		// Make the window.
-		const settingsDialog = new OO.ui.Dialog( {
+		const settingsDialog = new SettingsDialog( {
 			size: 'larger'
 		} );
 
