@@ -1,9 +1,10 @@
+import Option from 'Option.js';
 /**
- * @extends mw.libs.libSettings.Option
+ * @extends Option
  */
-export default class BooleanOption extends mw.libs.libSettings.Option {
+export default class BooleanOption extends Option {
 	constructor( config ) {
-		super( config, 'Boolean', 'boolean' );
+		super( config, 'Boolean', [ 'boolean' ] );
 	}
 
 	// TODO: emit an event upon saving the settings (using OO.eventemitter ),

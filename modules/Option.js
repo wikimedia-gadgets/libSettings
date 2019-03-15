@@ -1,3 +1,4 @@
+import libSettings from 'HelperFunctions.js';
 /** Represents an option.
  * @abstract
  * @param {Object} config
@@ -44,13 +45,16 @@ export default class Option {
 			this.basetypes &&
 			!this.basetypes.some( ( basetype ) => typeof value === basetype )
 		) {
-			mw.libs.libSettings.throw( `Value of ${this.name}  does not have one of the type(s) [${this.basetype}].`, errorLevel, 'TypeError' );
+			libSettings.throw( `Value of ${this.name} ( ${value} ) does not have one of the type(s) [${this.basetypes}].`, errorLevel, 'TypeError' );
 			return false;
 		}
 
 		// Check if in possibleValues
-		if ( this.possibleKeys.indexOf( value ) === -1 ) {
-			mw.libs.libSettings.throw( `Value of option ${this.name}, ${value}, is not in [${this.possibleKeys}].`, errorLevel );
+		if (
+			this.possibleKeys &&
+			this.possibleKeys.indexOf( value ) === -1
+		) {
+			libSettings.throw( `Value of option ${this.name}, ${value}, is not in [${this.possibleKeys}].`, errorLevel );
 			return false;
 		}
 
@@ -65,7 +69,7 @@ export default class Option {
 		if ( this.validate( value ) ) {
 			this.value = value;
 		} else {
-			mw.libs.libSettings.warn( `Validation of the value of ${this.name}, failed, so the default setting of ${this.defaultValue} has been used.` );
+			libSettings.warn( `Validation of the value of ${this.name}, failed, so the default setting of ${this.defaultValue} has been used.` );
 			this.value = this.defaultValue;
 		}
 	}
@@ -87,7 +91,7 @@ export default class Option {
 	 * before we can't build the settings menu with it?
 	 */
 	buildUI() {
-		return mw.libs.libSettings.error( `buildUI not defined by extending class ${this.type}Option.` );
+		return libSettings.error( `buildUI not defined by extending class ${this.type}Option.` );
 	}
 
 	/**
@@ -95,6 +99,6 @@ export default class Option {
 	 * @return {OO.ui.element}
 	 */
 	update() {
-		return mw.libs.libSettings.error( `update not defined by extending class ${this.type}Option.` );
+		return libSettings.error( `update not defined by extending class ${this.type}Option.` );
 	}
 }

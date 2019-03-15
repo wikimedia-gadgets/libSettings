@@ -23,7 +23,7 @@ export default class Settings {
 		// optionsConfig
 		this.optionsConfig = optionsConfig;
 		this.defaultOptions = {};
-		this.optionsConfig.foreach( ( element ) => {
+		this.optionsConfig.forEach( ( element ) => {
 			element.preferences.forEach( ( option ) => {
 				this.defaultOptions[ option.name ] = option.defaultValue;
 			} );
@@ -78,12 +78,6 @@ export default class Settings {
 
 	}
 
-	display() {
-		mw.loader.using( 'oojs-ui-core', 'oojs-ui-windows' ).then( () => {
-			this.displayMain();
-		} );
-	}
-
 	displayMain() {
 		// Creating and opening a simple dialog window.
 
@@ -92,8 +86,8 @@ export default class Settings {
 		function MyDialog( config ) {
 			MyDialog.super.call( this, config );
 		}
-		OO.inheritClass( MyDialog, OO.ui.Dialog );
 
+		OO.inheritClass( MyDialog, OO.ui.Dialog );
 		// Specify a name for .addWindows()
 		MyDialog.static.name = 'myDialog';
 		// Specify a title statically (or, alternatively, with data passed to the opening() method).
@@ -132,5 +126,11 @@ export default class Settings {
 
 		// Open the window!
 		windowManager.openWindow( myDialog );
+	}
+
+	display() {
+		mw.loader.using( 'oojs-ui-core', 'oojs-ui-windows' ).then( () => {
+			this.displayMain();
+		} );
 	}
 }

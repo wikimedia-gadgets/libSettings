@@ -1,4 +1,4 @@
-import '../dist/index.js';
+import '../modules/index.js';
 const BooleanOption = mw.libs.libSettings.BooleanOption;
 /* const NumberOption = mw.libs.libSettings.NumberOption;
 const StringOption = mw.libs.libSettings.StringOption; */
@@ -42,7 +42,7 @@ const optionsConfig = [
 				name: 'ClashFix',
 				label: 'Disable css used to prevent content jump.',
 				helptip: "You'd want to this if you have another script that clashes with this one, such as User:Yair_rand/WikidataInfo.js.",
-				value: false
+				defaultValue: false
 			} )
 		]
 	}

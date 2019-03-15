@@ -1,10 +1,11 @@
 /* Internal warn/error message functions. */
+const libSettings = {};
 /**
  * @func
  * @param {string} message
  * @return {string} Message with '[libSettings]' prefix.
 */
-mw.libs.libSettings.buildMessage = function ( message ) {
+libSettings.buildMessage = function ( message ) {
 	return ( `[libSettings] ${message}` );
 };
 
@@ -12,8 +13,8 @@ mw.libs.libSettings.buildMessage = function ( message ) {
  * @func
  * @param {string} message
 */
-mw.libs.libSettings.warn = function ( message ) {
-	mw.log.warn( mw.libs.libSettings.buildMessage( message ) );
+libSettings.warn = function ( message ) {
+	mw.log.warn( libSettings.buildMessage( message ) );
 };
 
 /**
@@ -31,8 +32,8 @@ libSettings.assert = function ( condition, message ) {
  * @param {string} message
  * @param {string} [errorType = 'Error']
 */
-mw.libs.libSettings.error = function ( message, errorType = 'Error' ) {
-	mw.log.error( new window[ errorType ]( mw.libs.libSettings.buildMessage( message ) ) );
+libSettings.error = function ( message, errorType = 'Error' ) {
+	mw.log.error( new window[ errorType ]( libSettings.buildMessage( message ) ) );
 };
 
 /** Used so that functions can take a parameter regarding whether
@@ -42,12 +43,14 @@ mw.libs.libSettings.error = function ( message, errorType = 'Error' ) {
  * @param {('warn'|'error')} errorLevel
  * @param {string} errorType
 */
-mw.libs.libSettings.throw = function ( message, errorLevel, errorType ) {
+libSettings.throw = function ( message, errorLevel, errorType ) {
 	switch ( errorLevel ) {
 		case 'warn':
-			mw.libs.libSettings.warn( message );
+			libSettings.warn( message );
 			break;
 		case 'error':
-			mw.libs.libSettings.error( message, errorType );
+			libSettings.error( message, errorType );
 	}
 };
+
+export default libSettings;
