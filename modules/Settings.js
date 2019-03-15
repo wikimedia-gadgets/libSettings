@@ -110,9 +110,13 @@ export default class Settings {
 			SettingsDialog.super.call( this, config );
 		};
 
-		OO.inheritClass( SettingsDialog, OO.ui.Dialog );
+		OO.inheritClass( SettingsDialog, OO.ui.ProcessDialog );
 		SettingsDialog.static.name = 'settingsDialog';
 		SettingsDialog.static.title = 'Settings';
+		SettingsDialog.static.actions = [
+			{ action: 'save', label: 'Save settings', flags: [ 'primary', 'progressive' ] },
+			{ label: 'Cancel', flags: 'safe' }
+		];
 
 		SettingsDialog.prototype.initialize = function () {
 			SettingsDialog.super.prototype.initialize.call( this );
@@ -126,7 +130,7 @@ export default class Settings {
 
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {
-			size: 'full' || this.size // TEMP
+			size: 'full' || this.size // TEMP, need to figure out how to make window size proper with sizes other than full
 		} );
 
 		// Create and append a window manager
