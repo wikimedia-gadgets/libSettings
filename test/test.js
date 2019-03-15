@@ -51,7 +51,7 @@ const optionsConfig = [
 
 const settingsConfig = {
 	scriptName: 'test',
-	formfactor: 'medium'
+	formFactor: 'medium'
 };
 
 const settings = new mw.libs.libSettings.Settings( optionsConfig, settingsConfig );
