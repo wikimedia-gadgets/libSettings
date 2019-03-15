@@ -30,7 +30,7 @@ export default class Option {
 				// eslint-disable-next-line no-restricted-syntax
 				this.possibleSettingsVal = this.possibleValues.values();
 		}
-		this.text = config.text;
+		this.label = config.label;
 		this.type = type;
 		this.basetypes = basetypes;
 		this.value = this.defaultValue;

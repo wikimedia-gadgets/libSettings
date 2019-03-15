@@ -10,7 +10,7 @@
  * @property {string} settingsConfig.scriptName
  * @property {string} [settingsConfig.optionName = scriptName] optionName is the name under which
  * the options are stored using API:Options.( "userjs-" is prepended to this ).
- * @property {string} settingsConfig.formFactor "small" | "medium" | "large" | "fullpage"
+ * @property {string} settingsConfig.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
  * @property {string} [settingsConfig.customSaveFailMessage]
  *
 */
@@ -30,6 +30,7 @@ export default class Settings {
 		} );
 		this.scriptName = settingsConfig.scriptName;
 		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
+		this.size = settingsConfig.size;
 		this.saveMessage = `Settings for ${this.scriptName} saved.`;
 		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
 	}
@@ -79,38 +80,31 @@ export default class Settings {
 	}
 
 	displayMain() {
-		function PageOneLayout( name, config ) {
-			PageOneLayout.super.call( this, name, config );
-			this.$element.append( '<p>First page</p>' );
-		}
+		this.pages = [];
 
-		OO.inheritClass( PageOneLayout, OO.ui.PageLayout );
-		PageOneLayout.prototype.setupOutlineItem = function () {
-			this.outlineItem.setLabel( 'Page One' );
-		};
+		this.optionsConfig.forEach( ( element ) => {
+			const Temp = function ( name, config ) {
+				Temp.super.call( this, name, config );
+				// eslint-disable-next-line no-restricted-syntax
+				element.preferences.forEach( ( option ) => {
+					this.$element.append( option.buildUI().$element );
+				} );
+			};
 
-		function PageTwoLayout( name, config ) {
-			PageTwoLayout.super.call( this, name, config );
-			this.$element.append( '<p>Second page</p>' );
-		}
+			OO.inheritClass( Temp, OO.ui.PageLayout );
+			Temp.prototype.setupOutlineItem = function () {
+				this.outlineItem.setLabel( element.title );
+			};
 
-		OO.inheritClass( PageTwoLayout, OO.ui.PageLayout );
-		PageTwoLayout.prototype.setupOutlineItem = function () {
-			this.outlineItem.setLabel( 'Page Two' );
-		};
+			const temp = new Temp( element.title );
+			this.pages.push( temp );
+		} );
 
-		// Create the pages
-		const page1 = new PageOneLayout( 'one' );
-		const page2 = new PageTwoLayout( 'two' );
-
-		// Create a booklet. Set 'outlined' to 'true' to display the
-		// outline labels (e.g., 'Page One') on the left side of the booklet.
 		const booklet = new OO.ui.BookletLayout( {
 			outlined: true
 		} );
 
-		// Add pages to the booklet with the addPages() method.
-		booklet.addPages( [ page1, page2 ] );
+		booklet.addPages( this.pages );
 
 		const SettingsDialog = function ( config ) {
 			SettingsDialog.super.call( this, config );
@@ -127,12 +121,12 @@ export default class Settings {
 		};
 
 		/* SettingsDialog.prototype.getBodyHeight = function () {
-			return this.content.$element.outerHeight( false );
+			return this.content.$element.outerHeight( 800 );
 		};*/
 
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {
-			size: 'larger'
+			size: 'full' || this.size // TEMP
 		} );
 
 		// Create and append a window manager

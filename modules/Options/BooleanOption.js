@@ -15,7 +15,8 @@ export default class BooleanOption extends Option {
 			name: this.name,
 			selected: this.getValue()
 		} );
-		return this.checkbox;
+
+		return new OO.ui.FieldLayout( this.checkbox, { label: this.label, align: 'inline' } );
 	}
 
 	update() {
