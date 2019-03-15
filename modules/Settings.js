@@ -9,9 +9,9 @@
  * @param {Object} settingsConfig
  * @property {string} settingsConfig.scriptName
  * @property {string} [settingsConfig.optionName = scriptName] optionName is the name under which
- * the options are stored using API:Options. ( "userjs-" is prepended to this )
+ * the options are stored using API:Options.( "userjs-" is prepended to this ).
  * @property {string} settingsConfig.formFactor "small" | "medium" | "large" | "fullpage"
- * @property {string} [settingsConfig.customFailMessage]
+ * @property {string} [settingsConfig.customSaveFailMessage]
  *
 */
 
@@ -22,7 +22,9 @@ export default class Settings {
 	) {
 		// optionsConfig
 		this.optionsConfig = optionsConfig;
-		this.default;
+		this.defaultOptions = this.traverse( optionsConfig ).forEach( ( option ) => {
+			// option.
+		} );
 		/* MAYBE FIXME: Check for duplicate names of options in optionsConfig
 		 * - must be completely unique
 		this.optionsConfig.foreach( ( element.preferences ) => {
@@ -32,13 +34,16 @@ export default class Settings {
 		} ); */
 
 		this.scriptName = settingsConfig.scriptName;
-		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName}`;
-		this.failMessage = settingsConfig.customFailMessage || `Could not load settings for ${this.scriptName}.`;
+		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
+		this.saveMessage = `Settings for ${this.scriptName} saved.`;
+		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
 	}
 
-	/* Function to get all the [@link libSettings.Option] objects inside optionsConfig */
+	/* Function to get all the [@link Option] objects inside optionsConfig */
 	traverse() {
-
+		this.optionsConfig.forEach( ( element ) => {
+			return element;
+		} );
 	}
 
 	/** Save settings
@@ -53,7 +58,11 @@ export default class Settings {
 					}
 				}
 			} );
-			this.API.saveOption( this.optionName, JSON.stringify( /* ?*/ ) );
+			this.API.saveOption( this.optionName, JSON.stringify( /* ?*/ ) ).then( () => {
+				mw.notify( this.saveMessage );
+			}, () => {
+				mw.notify( this.saveFailMessage );
+			} );
 		} );
 	}
 

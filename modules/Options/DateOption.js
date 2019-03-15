@@ -1,9 +1,9 @@
 /**
  * Use mw.widgets.DateInputWidget
- * @extends Option
+ * @extends mw.libs.libSettings.Option
  */
-export default class DateOption {
+export default class DateOption extends mw.libs.libSettings.Option {
 	constructor( config ) {
 		super( config, 'Date', 'Date' );
 	}
-};
+}
