@@ -1,4 +1,3 @@
-'use strict';
 /**
  * @param {Array.<Object>} optionsConfig
  * @property {string} optionsConfig[].title Header of particular set of preferences
@@ -16,7 +15,7 @@
  *
 */
 
-libSettings.Settings = class {
+export default class Settings {
 	constructor(
 		optionsConfig,
 		settingsConfig
@@ -82,7 +81,7 @@ libSettings.Settings = class {
 
 	}
 
-	render() {
+	display() {
 
 	}
-};
+}
