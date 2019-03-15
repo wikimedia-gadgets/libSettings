@@ -22,17 +22,28 @@ export default class Settings {
 	) {
 		// optionsConfig
 		this.optionsConfig = optionsConfig;
-		this.defaultOptions = {};
-		this.optionsConfig.forEach( ( element ) => {
-			element.preferences.forEach( ( option ) => {
-				this.defaultOptions[ option.name ] = option.defaultValue;
-			} );
-		} );
+		/* this.defaultOptions = {};
+		this.runOverOptionsConfig( ( option ) => {
+			this.defaultOptions[ option.name ] = option.defaultValue;
+		} );*/
 		this.scriptName = settingsConfig.scriptName;
 		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
 		this.size = settingsConfig.size;
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
+	}
+
+	/* Traverse through optionsConfig and get the requested value from the key,
+	 * returning as a pair of option name and that value.
+	 * settings menu
+	 * @function
+	 * @return {Object} */
+	runOverOptionsConfig( func ) {
+		this.optionsConfig.forEach( ( element ) => {
+			element.preferences.forEach( ( option ) => {
+				func( option );
+			} );
+		} );
 	}
 
 	/** Get settings
@@ -43,11 +54,18 @@ export default class Settings {
 		if ( !this.options ) {
 			this.optionsText = mw.user.options.get( this.optionName );
 			this.userOptions = JSON.parse( this.optionsText );
-			this.defaultKeys = Object.keys( this.defaultOptions );
+			// transfer userOptions to optionsConfig
+			this.runOverOptionsConfig( ( option ) => {
+				const userOption = this.userOptions[ option.name ];
+				if ( userOption !== undefined ) {
+					option.setCustomValue( userOption );
+				}
+			} );
+
+			// Then retrieve it, along with default Option as necessary
 			this.options = {};
-			// Loop clones this.defaultOptions while using this.userOptions when it exists
-			this.defaultKeys.foreach( ( key ) => {
-				this.options[ key ] = this.userOptions[ key ] || this.defaultOptions[ key ];
+			this.runOverOptionsConfig( ( option ) => {
+				this.options[ option.name ] = option.value;
 			} );
 		}
 		return this.options;
@@ -66,19 +84,18 @@ export default class Settings {
 					}
 				}
 			} );
-			return this.API.saveOption( this.optionName, JSON.stringify( '' ) );
+			this.newUserOptions = {};
+			this.runOverOptionsConfig( ( option ) => {
+				this.newUserOptions[ option.name ] = option.getCustomValue();
+			} );
+			return this.API.saveOption( this.optionName, JSON.stringify( this.newUserOptions ) );
 		} );
-	}
-
-	/* Traverse through this.optionsConfig and get the values inputed by the user into the
-	 * settings menu */
-	getInputedValues() {
-
 	}
 
 	displayMain() {
 		this.pages = [];
 
+		// Deal with case of optionsConfig len 1 - can't BookLetLayout as only would be one BookLet
 		this.optionsConfig.forEach( ( element ) => {
 			const Temp = function ( name, config ) {
 				Temp.super.call( this, name, config );
@@ -160,6 +177,7 @@ export default class Settings {
 	}
 
 	display() {
+		this.get();
 		mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then( () => {
 			return this.displayMain();
 		} );

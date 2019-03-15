@@ -34,9 +34,9 @@ export default class Option {
 		this.helptip = config.helptip;
 		this.type = type;
 		this.basetypes = basetypes;
-		this.value = this.defaultValue;
 		this.FieldLayout = true;
-		this.helpinline = true || config.helpinline; // TODO would want to be able to set all
+		this.helpinline = true || config.helpinline; /* TODO would want to be able to set all helpinline for a panel or entire settings window
+		(e.g for twinkle would want to set all helpinline to true (probably don't want to mix types for at-least a panel - make it an optionsConfig preference for each panel and for the whole optionsConfig )) */
 		this.validate( this.defaultValue, 'error' );
 		// TODO: pseudocode
 		// on ( 'savesettingsevent', update() )
@@ -65,24 +65,35 @@ export default class Option {
 	}
 
 	/**
-	 * Set option value.
-	 * @param {*} value
+	 * Get custom value of option. (called when saving settings. )
+	 * @return {*} value
 	 */
-	setValue( value ) {
-		if ( this.validate( value ) ) {
-			this.value = value;
+	getCustomValue() {
+		const customValue = this.getUIvalue();
+		if ( this.validate( customValue ) ) {
+			return customValue;
 		} else {
-			libSettings.warn( `Validation of the value of ${this.name}, failed, so the default setting of ${this.defaultValue} has been used.` );
-			this.value = this.defaultValue;
+			console.log( customValue );
+			libSettings.warn( `Validation of the user inputed value of ${this.name}, failed, so that setting was not saved.` );
 		}
 	}
 
 	/**
-	 * Get option value.
-	 * @return {*}
+	 * Set custom value of option. (called when loading settings and copying over to optionsConfig. )
+	 * @param {*} value
 	 */
-	getValue() {
-		return this.value;
+	setCustomValue( customValue ) {
+		if ( this.validate( customValue ) ) {
+			this.customValue = customValue;
+		}
+	}
+
+	get value() {
+		if ( this.customValue !== undefined ) {
+			return this.customValue;
+		} else {
+			return this.defaultValue;
+		}
 	}
 
 	/**
@@ -97,18 +108,14 @@ export default class Option {
 		return libSettings.error( `buildUI not defined by extending class ${this.type}Option.` );
 	}
 
-	UI() {
-		const out = this.buildUI();
-		return this.FieldLayout ?
-			new OO.ui.FieldLayout( out, { label: this.label, help: this.helptip, helpinline: this.helpinline, align: 'inline' } ) :
-			out;
+	getUIvalue() {
+		return libSettings.error( `getUIvalue not defined by extending class ${this.type}Option.` );
 	}
 
-	/**
-	 * Update value. (called when save settings event is emitted )
-	 * @return {OO.ui.element}
-	 */
-	update() {
-		return libSettings.error( `update not defined by extending class ${this.type}Option.` );
+	UI() {
+		this.UIelement = this.buildUI();
+		return this.FieldLayout ?
+			new OO.ui.FieldLayout( this.UIelement, { label: this.label, help: this.helptip, helpinline: this.helpinline, align: 'inline' } ) :
+			out;
 	}
 }
