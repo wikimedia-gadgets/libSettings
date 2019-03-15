@@ -79,58 +79,77 @@ export default class Settings {
 	}
 
 	displayMain() {
-		// Creating and opening a simple dialog window.
-
-		// Subclass Dialog class. Note that the OOjs inheritClass() method extends the parent constructor's prototype and static methods and properties to the child constructor.
-
-		function MyDialog( config ) {
-			MyDialog.super.call( this, config );
+		function PageOneLayout( name, config ) {
+			PageOneLayout.super.call( this, name, config );
+			this.$element.append( '<p>First page</p>' );
 		}
 
-		OO.inheritClass( MyDialog, OO.ui.Dialog );
-		// Specify a name for .addWindows()
-		MyDialog.static.name = 'myDialog';
-		// Specify a title statically (or, alternatively, with data passed to the opening() method).
-		MyDialog.static.title = 'Simple dialog';
-
-		// Customize the initialize() function: This is where to add content to the dialog body and set up event handlers.
-		MyDialog.prototype.initialize = function () {
-		// Call the parent method
-			MyDialog.super.prototype.initialize.call( this );
-			// Create and append a layout and some content.
-			this.content = new OO.ui.PanelLayout( {
-				padded: true,
-				expanded: false
-			} );
-			this.content.$element.append( '<p>A simple dialog window. Press \'Esc\' to close. </p>' );
-			this.$body.append( this.content.$element );
+		OO.inheritClass( PageOneLayout, OO.ui.PageLayout );
+		PageOneLayout.prototype.setupOutlineItem = function () {
+			this.outlineItem.setLabel( 'Page One' );
 		};
 
-		// Override the getBodyHeight() method to specify a custom height (or don't to use the automatically generated height)
-		MyDialog.prototype.getBodyHeight = function () {
-			return this.content.$element.outerHeight( true );
+		function PageTwoLayout( name, config ) {
+			PageTwoLayout.super.call( this, name, config );
+			this.$element.append( '<p>Second page</p>' );
+		}
+
+		OO.inheritClass( PageTwoLayout, OO.ui.PageLayout );
+		PageTwoLayout.prototype.setupOutlineItem = function () {
+			this.outlineItem.setLabel( 'Page Two' );
 		};
 
-		// Make the window.
-		const myDialog = new MyDialog( {
-			size: 'medium'
+		// Create the pages
+		const page1 = new PageOneLayout( 'one' );
+		const page2 = new PageTwoLayout( 'two' );
+
+		// Create a booklet. Set 'outlined' to 'true' to display the
+		// outline labels (e.g., 'Page One') on the left side of the booklet.
+		const booklet = new OO.ui.BookletLayout( {
+			outlined: true
 		} );
 
-		// Create and append a window manager, which will open and close the window.
+		// Add pages to the booklet with the addPages() method.
+		booklet.addPages( [ page1, page2 ] );
+
+		const SettingsDialog = function ( config ) {
+			SettingsDialog.super.call( this, config );
+		};
+
+		OO.inheritClass( SettingsDialog, OO.ui.Dialog );
+		SettingsDialog.static.name = 'settingsDialog';
+		SettingsDialog.static.title = 'Settings';
+
+		SettingsDialog.prototype.initialize = function () {
+			SettingsDialog.super.prototype.initialize.call( this );
+			this.$body.append( booklet.$element );
+		};
+
+		/* SettingsDialog.prototype.getBodyHeight = function () {
+			return this.content.$element.outerHeight( false );
+		};*/
+
+		// Make the window.
+		const settingsDialog = new OO.ui.Dialog( {
+			size: 'larger'
+		} );
+
+		// Create and append a window manager
 		const windowManager = new OO.ui.WindowManager();
+
 		// eslint-disable-next-line jquery/no-global-selector
 		$( 'body' ).append( windowManager.$element );
 
 		// Add the window to the window manager using the addWindows() method.
-		windowManager.addWindows( [ myDialog ] );
+		windowManager.addWindows( [ settingsDialog ] );
 
 		// Open the window!
-		windowManager.openWindow( myDialog );
+		windowManager.openWindow( settingsDialog );
 	}
 
 	display() {
-		mw.loader.using( 'oojs-ui-core', 'oojs-ui-windows' ).then( () => {
-			this.displayMain();
+		mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then( () => {
+			return this.displayMain();
 		} );
 	}
 }

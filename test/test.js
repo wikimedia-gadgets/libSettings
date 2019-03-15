@@ -56,3 +56,4 @@ const settingsConfig = {
 
 const settings = new mw.libs.libSettings.Settings( optionsConfig, settingsConfig );
 settings.display();
+window.settings = settings;
