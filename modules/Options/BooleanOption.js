@@ -13,15 +13,15 @@ export default class BooleanOption extends Option {
 			selected: this.value
 		} );
 
-		return OO.ui.FieldLayout( this.checkbox, {
-			label: this.label,
+		return new OO.ui.FieldLayout( this.checkbox, {
 			help: this.helptip,
+			label: this.label,
 			helpInline: this.helpInline,
 			align: 'inline'
 		} );
 	}
 
 	getUIvalue() {
-		return this.UIelement.isSelected();
+		return this.checkbox.isSelected();
 	}
 }

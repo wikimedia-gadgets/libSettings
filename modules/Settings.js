@@ -11,6 +11,7 @@
  * @property {string} [settingsConfig.optionName = scriptName] optionName is the name under which
  * the options are stored using API:Options.( "userjs-" is prepended to this ).
  * @property {string} settingsConfig.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
+ * @property {number} settingsConfig.title
  * @property {string} [settingsConfig.customSaveFailMessage]
  *
 */
@@ -29,6 +30,7 @@ export default class Settings {
 		this.scriptName = settingsConfig.scriptName;
 		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
 		this.size = settingsConfig.size;
+		this.title = settingsConfig.title || 'Settings';
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
 	}
@@ -58,7 +60,7 @@ export default class Settings {
 			this.runOverOptionsConfig( ( option ) => {
 				const userOption = this.userOptions[ option.name ];
 				if ( userOption !== undefined ) {
-					option.setCustomValue( userOption );
+					option.customValue = userOption;
 				}
 			} );
 
@@ -92,14 +94,18 @@ export default class Settings {
 		} );
 	}
 
-	displayMain() {
-		this.pages = [];
+	reset() {
+		this.runOverOptionsConfig( ( option ) => option.reset() );
+		this.options = undefined;
+	}
 
-		// Deal with case of optionsConfig len 1 - can't use BookLetLayout as only would be one BookLet
+	genInternalUI() {
+		const pages = [];
+
+		const onePage = this.optionsConfig.length === 1;
 		this.optionsConfig.forEach( ( element ) => {
 			const Temp = function ( name, config ) {
 				Temp.super.call( this, name, config );
-				// eslint-disable-next-line no-restricted-syntax
 				element.preferences.forEach( ( option ) => {
 					this.$element.append( option.UI().$element );
 				} );
@@ -110,15 +116,27 @@ export default class Settings {
 				this.outlineItem.setLabel( element.title );
 			};
 
-			const temp = new Temp( element.title );
-			this.pages.push( temp );
+			const temp = new Temp( element.title, { padded: onePage } );
+			pages.push( temp );
 		} );
 
-		const booklet = new OO.ui.BookletLayout( {
-			outlined: true
-		} );
+		let internalUI;
 
-		booklet.addPages( this.pages );
+		if ( !onePage ) {
+			internalUI = new OO.ui.BookletLayout( {
+				outlined: true
+			} );
+
+			internalUI.addPages( pages );
+		} else {
+			internalUI = pages[ 0 ];
+		}
+
+		return internalUI;
+	}
+
+	displayMain() {
+		const internalUI = this.genInternalUI();
 
 		const SettingsDialog = function ( config ) {
 			SettingsDialog.super.call( this, config );
@@ -126,41 +144,59 @@ export default class Settings {
 
 		OO.inheritClass( SettingsDialog, OO.ui.ProcessDialog );
 		SettingsDialog.static.name = 'settingsDialog';
-		SettingsDialog.static.title = 'Settings';
+		SettingsDialog.static.title = this.title;
 		SettingsDialog.static.actions = [
 			{ action: 'save', label: 'Save settings', flags: [ 'primary', 'progressive' ] },
-			{ label: 'Cancel', flags: 'safe' }
+			{ label: 'Cancel', flags: [ 'safe', 'destructive' ] },
+			{ action: 'reset', label: 'Show defaults' }
 		];
 
 		SettingsDialog.prototype.initialize = function () {
 			SettingsDialog.super.prototype.initialize.call( this );
-			this.content = booklet;
+			this.content = internalUI;
 			this.$body.append( this.content.$element );
 		};
 
 		const self = this;
 		SettingsDialog.prototype.getActionProcess = function ( action ) {
-			if ( action ) {
+			if ( action === 'save' ) {
 				return new OO.ui.Process( () => {
-					self.save().then( () => {
+					const promise = self.save();
+					this.pushPending();
+					this.close( promise );
+					promise.then( () => {
 						mw.notify( self.saveMessage );
 					}, () => {
 						mw.notify( self.saveFailMessage );
-					} ).always( () => {
-						this.close( { action: action } );
 					} );
 				} );
 			}
+
+			if ( action === 'reset' ) {
+				return new OO.ui.Process( () => {
+					self.reset();
+					this.content = self.genInternalUI();
+					this.$body.html( this.content.$element );
+				} );
+			}
+
 			return SettingsDialog.parent.prototype.getActionProcess.call( this, action );
 		};
 
-		/* SettingsDialog.prototype.getBodyHeight = function () {
-			return this.content.$element.outerHeight( 800 );
-		};*/
+		SettingsDialog.prototype.getHoldProcess = function ( data ) {
+			const process = SettingsDialog.parent.prototype.getHoldProcess.call( this, data );
+			process.next( data );
+			process.next( () => this.popPending() );
+			return process;
+		};
+
+		SettingsDialog.prototype.getBodyHeight = function () {
+			return this.content.$element.outerHeight( 900 ); // TEMP, need to figure out how to properly make window size
+		};
 
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {
-			size: 'full' || this.size // TEMP, need to figure out how to make window size proper with sizes other than full
+			size: this.size
 		} );
 
 		// Create and append a window manager
@@ -171,6 +207,7 @@ export default class Settings {
 
 		windowManager.addWindows( [ settingsDialog ] );
 		windowManager.openWindow( settingsDialog );
+		return settingsDialog;
 	}
 
 	display() {

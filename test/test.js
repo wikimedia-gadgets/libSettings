@@ -1,7 +1,7 @@
 import '../modules/index.js';
 const BooleanOption = mw.libs.libSettings.BooleanOption;
 const NumberOption = mw.libs.libSettings.NumberOption;
-const DropdownOption = mw.libs.libSettings.DropdownOption;
+// const DropdownOption = mw.libs.libSettings.DropdownOption;
 const optionsConfig = [
 	{
 		title: 'Main',
@@ -9,8 +9,12 @@ const optionsConfig = [
 			new NumberOption( {
 				name: 'InputWidth',
 				label: 'Width of editing input',
+				helptip: 'foooooo',
 				defaultValue: 35,
-				values: [ 20, 1000 ]
+				values: {
+					min: 20,
+					max: 1000
+				}
 			} ),
 			new BooleanOption( {
 				name: 'AddToRedirect',
@@ -23,17 +27,18 @@ const optionsConfig = [
 				label: 'Upload to wikidata when adding a short description.',
 				helptip: 'When checked.. ',
 				defaultValue: true
-			} ),
+			} )/* ,
 			new DropdownOption( {
 				name: 'SaveWikidata',
 				label: 'Save changes to Wikidata',
+				helptip: 'foooooo',
 				defaultValue: 'add',
 				values: [
 					[ 'add', 'Only on additions (default)' ],
 					[ 'all', 'On all changes' ],
 					[ 'never', 'Never' ]
 				]
-			} )
+			} )*/
 		]
 	}, /*
 
@@ -58,7 +63,7 @@ const optionsConfig = [
 
 const settingsConfig = {
 	scriptName: 'test',
-	formFactor: 'medium'
+	size: 'larger'
 };
 
 const settings = new mw.libs.libSettings.Settings( optionsConfig, settingsConfig );

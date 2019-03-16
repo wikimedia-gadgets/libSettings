@@ -2,19 +2,21 @@ import Option from 'Option.js';
 /**
  * @extends Option
  */
-export default class BooleanOption extends Option {
+export default class NumberOption extends Option {
 	constructor( config ) {
-		super( config, 'Boolean', [ 'boolean' ] );
+		super( config, 'Number' );
 	}
 
 	UI() {
-		this.checkbox = new OO.ui.CheckboxInputWidget( {
+		this.numberInput = new OO.ui.NumberInputWidget( {
 			name: this.name,
-			selected: this.value
+			text: this.label,
+			input: { value: this.value },
+			min: this.values.min,
+			max: this.values.max
 		} );
 
-		return OO.ui.FieldLayout( this.checkbox, {
-			label: this.label,
+		return new OO.ui.FieldLayout( this.numberInput, {
 			help: this.helptip,
 			helpInline: this.helpInline,
 			align: 'inline'
@@ -22,6 +24,6 @@ export default class BooleanOption extends Option {
 	}
 
 	getUIvalue() {
-		return this.UIelement.isSelected();
+		return this.numberInput.getValue();
 	}
 }
