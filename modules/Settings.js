@@ -1,3 +1,4 @@
+import wrapSettingsDialog from 'SettingsDialog.js';
 /**
  * @param {Array.<Object>} optionsConfig
  * @property {string} optionsConfig[].title Header of particular set of preferences
@@ -100,6 +101,7 @@ export default class Settings {
 	}
 
 	displayMain() {
+		const SettingsDialog = wrapSettingsDialog();
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {
 			size: this.size
