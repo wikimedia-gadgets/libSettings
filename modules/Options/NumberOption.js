@@ -7,16 +7,6 @@ export default class NumberOption extends Option {
 		super( config, 'Number' );
 	}
 
-	validate( value ) {
-		const num = Number( value );
-		const valid = ( num > this.UIconfig.min && num < this.UIconfig.max );
-		if ( this.validInput && !valid ) {
-			this.disableSave();
-		} else if ( !this.validInput && valid ) {
-			this.enableSave();
-		}
-	}
-
 	UI() {
 		this.UIconfig.name = this.name;
 		this.UIconfig.classes = [ 'libSettings-numberInput' ];

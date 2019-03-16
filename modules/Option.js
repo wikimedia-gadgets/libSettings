@@ -13,7 +13,7 @@
  * @param {...string} basetypes Type(s) to validate against (Defined by extending classes).
 */
 
-export default class Option extends OO.EventEmitter {
+export default class Option {
 	constructor( config, type ) {
 		super();
 		this.name = config.name;
@@ -36,16 +36,6 @@ export default class Option extends OO.EventEmitter {
 
 	reset() {
 		this.customValue = undefined;
-	}
-
-	disableSave() {
-		this.validInput = false;
-		this.emit( 'invalidInput' );
-	}
-
-	enableSave() {
-		this.validInput = true;
-		this.emit( 'validInput' );
 	}
 
 	/**
