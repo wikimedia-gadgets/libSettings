@@ -1,16 +1,17 @@
 import '../modules/index.js';
 const BooleanOption = mw.libs.libSettings.BooleanOption;
-/* const NumberOption = mw.libs.libSettings.NumberOption;
-const StringOption = mw.libs.libSettings.StringOption; */
+const NumberOption = mw.libs.libSettings.NumberOption;
+const DropdownOption = mw.libs.libSettings.DropdownOption;
 const optionsConfig = [
 	{
 		title: 'Main',
-		preferences: [/*
+		preferences: [
 			new NumberOption( {
 				name: 'InputWidth',
 				label: 'Width of editing input',
-				defaultValue: 35
-			} ),*/
+				defaultValue: 35,
+				values: [ 20, 1000 ]
+			} ),
 			new BooleanOption( {
 				name: 'AddToRedirect',
 				label: 'Allow additions to redirects',
@@ -22,8 +23,8 @@ const optionsConfig = [
 				label: 'Upload to wikidata when adding a short description.',
 				helptip: 'When checked.. ',
 				defaultValue: true
-			} ) /*
-			new StringOption( {
+			} ),
+			new DropdownOption( {
 				name: 'SaveWikidata',
 				label: 'Save changes to Wikidata',
 				defaultValue: 'add',
@@ -32,7 +33,7 @@ const optionsConfig = [
 					[ 'all', 'On all changes' ],
 					[ 'never', 'Never' ]
 				]
-			} )*/
+			} )
 		]
 	}, /*
 
