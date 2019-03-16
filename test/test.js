@@ -8,8 +8,7 @@ const optionsConfig = [
 		preferences: [
 			new NumberOption( {
 				name: 'InputWidth',
-				label: 'Width of editing input',
-				helptip: 'foooooo',
+				label: 'Width of editing input (em)',
 				defaultValue: 35,
 				values: {
 					min: 20,

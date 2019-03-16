@@ -26,6 +26,7 @@ export default class Settings {
 		this.title = config.title || 'Settings';
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = `Could not save settings for ${this.scriptName}.`;
+		this.helpInline = true;
 	}
 
 	/* Traverse through optionsConfig and run the function over each option
