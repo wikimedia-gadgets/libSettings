@@ -86,7 +86,7 @@ export default class Settings {
 			} );
 			this.newUserOptions = {};
 			this.runOverOptionsConfig( ( option ) => {
-				this.newUserOptions[ option.name ] = option.getCustomValue();
+				this.newUserOptions[ option.name ] = option.getCustomUIValue();
 			} );
 			return this.API.saveOption( this.optionName, JSON.stringify( this.newUserOptions ) );
 		} );
@@ -95,7 +95,7 @@ export default class Settings {
 	displayMain() {
 		this.pages = [];
 
-		// Deal with case of optionsConfig len 1 - can't BookLetLayout as only would be one BookLet
+		// Deal with case of optionsConfig len 1 - can't use BookLetLayout as only would be one BookLet
 		this.optionsConfig.forEach( ( element ) => {
 			const Temp = function ( name, config ) {
 				Temp.super.call( this, name, config );
@@ -169,10 +169,7 @@ export default class Settings {
 		// eslint-disable-next-line jquery/no-global-selector
 		$( 'body' ).append( windowManager.$element );
 
-		// Add the window to the window manager using the addWindows() method.
 		windowManager.addWindows( [ settingsDialog ] );
-
-		// Open the window!
 		windowManager.openWindow( settingsDialog );
 	}
 

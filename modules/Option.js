@@ -35,7 +35,7 @@ export default class Option {
 		this.type = type;
 		this.basetypes = basetypes;
 		this.FieldLayout = true;
-		this.helpinline = true || config.helpinline; /* TODO would want to be able to set all helpinline for a panel or entire settings window
+		this.helpInline = true || config.helpinline; /* TODO would want to be able to set all helpinline for a panel or entire settings window
 		(e.g for twinkle would want to set all helpinline to true (probably don't want to mix types for at-least a panel - make it an optionsConfig preference for each panel and for the whole optionsConfig )) */
 		this.validate( this.defaultValue, 'error' );
 		// TODO: pseudocode
@@ -65,22 +65,8 @@ export default class Option {
 	}
 
 	/**
-	 * Get custom value of option. (called when saving settings. )
-	 * @return {*} value
-	 */
-	getCustomValue() {
-		const customValue = this.getUIvalue();
-		if ( this.validate( customValue ) ) {
-			return customValue;
-		} else {
-			console.log( customValue );
-			libSettings.warn( `Validation of the user inputed value of ${this.name}, failed, so that setting was not saved.` );
-		}
-	}
-
-	/**
 	 * Set custom value of option. (called when loading settings and copying over to optionsConfig. )
-	 * @param {*} value
+	 * @param {*} customValue
 	 */
 	setCustomValue( customValue ) {
 		if ( this.validate( customValue ) ) {
@@ -104,7 +90,7 @@ export default class Option {
 	 * i.e, must satisfy certain portions of OO.ui.element to work
 	 * before we can't build the settings menu with it?
 	 */
-	buildUI() {
+	UI() {
 		return libSettings.error( `buildUI not defined by extending class ${this.type}Option.` );
 	}
 
@@ -112,10 +98,15 @@ export default class Option {
 		return libSettings.error( `getUIvalue not defined by extending class ${this.type}Option.` );
 	}
 
-	UI() {
-		this.UIelement = this.buildUI();
-		return this.FieldLayout ?
-			new OO.ui.FieldLayout( this.UIelement, { label: this.label, help: this.helptip, helpinline: this.helpinline, align: 'inline' } ) :
-			out;
+	/**
+	 * Return only custom values of option from UI. (called when saving settings. )
+	 * @return {*} value
+	 */
+	getCustomUIValue() {
+		const UIValue = this.getUIvalue();
+		if ( UIValue !== this.defaultValue ) {
+			this.setCustomValue( UIValue );
+			return this.customValue;
+		}
 	}
 }
