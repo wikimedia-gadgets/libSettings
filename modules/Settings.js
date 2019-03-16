@@ -1,43 +1,44 @@
 import wrapSettingsDialog from 'SettingsDialog.js';
 /**
- * @param {Array.<Object>} optionsConfig
- * @property {string} optionsConfig[].title Header of particular set of preferences
- * @property {(boolean|Function)} [optionsConfig[].show] Boolean or function that returns a
- * Boolean. Can use anonymous function when a variable is only loaded after the settings is loaded.
- * @property {(boolean|Function)} [optionsConfig[].collapsed] Whether the settings should be
- *  collapsed (e.g, if it is rarely used "Advanced" settings).
- * @property {...libSettings.Option} optionsConfig[].preferences Array of Option objects.
  * @param {Object} settingsConfig
  * @property {string} settingsConfig.scriptName
  * @property {string} [settingsConfig.optionName = scriptName] optionName is the name under which
  * the options are stored using API:Options.( "userjs-" is prepended to this ).
  * @property {string} settingsConfig.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
  * @property {number} settingsConfig.title
- * @property {string} [settingsConfig.customSaveFailMessage]
+ *
+ * @property {Array.<Object>} config.optionsConfig
+ * @property {string} config.optionsConfig[].title Header of particular set of preferences
+ * @property {(boolean|Function)} [config.optionsConfig[].show] Boolean or function that returns a
+ * Boolean. Can use anonymous function when a variable is only loaded after the settings is loaded.
+ * @property {...libSettings.Option} config.optionsConfig[].preferences Array of Option objects.
  *
 */
 
 export default class Settings {
 	constructor(
-		optionsConfig,
-		settingsConfig
+		config
 	) {
-		this.optionsConfig = optionsConfig;
-		this.scriptName = settingsConfig.scriptName;
-		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
-		this.size = settingsConfig.size;
-		this.title = settingsConfig.title || 'Settings';
+		this.optionsConfig = config.optionsConfig;
+		this.scriptName = config.scriptName;
+		this.optionName = `userjs-${ config.optionName || config.scriptName }`;
+		this.size = config.size;
+		this.title = config.title || 'Settings';
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
-		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
+		this.saveFailMessage = `Could not save settings for ${this.scriptName}.`;
 	}
 
-	/* Traverse through optionsConfig andrun the function over each option
+	/* Traverse through optionsConfig and run the function over each option
 	 * @function
 	 * @return {Object} */
 	runOverOptionsConfig( func ) {
 		this.optionsConfig.forEach( ( element ) => {
-			element.preferences.forEach( ( option ) => {
-				func( option );
+			element.preferences.forEach( ( element2 ) => {
+				if ( element2.header ) {
+					element2.options.forEach( option => func( option ) );
+				} else {
+					func( element2 );
+				}
 			} );
 		} );
 	}
@@ -87,6 +88,10 @@ export default class Settings {
 			return this.API.saveOption( this.optionName, JSON.stringify( this.newUserOptions ) );
 		} );
 	}
+
+	/** Reset optionsConfig
+	 * Resets the optionsconfig (but does not save)
+	 */
 
 	reset() {
 		this.runOverOptionsConfig( ( option ) => option.reset() );

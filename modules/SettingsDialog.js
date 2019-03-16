@@ -3,8 +3,17 @@ export default function wrapSettingsDialog() {
 		constructor( name, config, element ) {
 			super( name, config );
 			this.element = element;
-			this.element.preferences.forEach( ( option ) => {
-				this.$element.append( option.UI().$element );
+			this.element.preferences.forEach( ( element2 ) => {
+				if ( element2.header ) {
+					const fieldset = new OO.ui.FieldsetLayout( {
+						label: element2.header
+					} );
+					const fieldLayouts = element2.options.map( ( option ) => option.UI() );
+					fieldset.addItems( fieldLayouts );
+					this.$element.append( fieldset.$element );
+				} else {
+					this.$element.append( element2.UI().$element );
+				}
 			} );
 		}
 
@@ -98,5 +107,6 @@ export default function wrapSettingsDialog() {
 			return this.content.$element.outerHeight( 900 ); // TEMP, need to figure out how to properly make window size
 		}
 	}
+
 	return SettingsDialog;
 }

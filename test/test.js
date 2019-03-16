@@ -16,18 +16,24 @@ const optionsConfig = [
 					max: 1000
 				}
 			} ),
-			new BooleanOption( {
-				name: 'AddToRedirect',
-				label: 'Allow additions to redirects',
-				helptip: 'When checked, redirects will have ',
-				defaultValue: true
-			} ),
-			new BooleanOption( {
-				name: 'AddWikidata',
-				label: 'Upload to wikidata when adding a short description.',
-				helptip: 'When checked.. ',
-				defaultValue: true
-			} )/* ,
+			{
+				header: 'checkboxes',
+				options: [
+					new BooleanOption( {
+						name: 'AddToRedirect',
+						label: 'Allow additions to redirects',
+						helptip: 'When checked, redirects will have ',
+						defaultValue: true
+					} ),
+					new BooleanOption( {
+						name: 'AddWikidata',
+						label: 'Upload to wikidata when adding a short description.',
+						helptip: 'When checked.. ',
+						defaultValue: true
+					} )
+				]
+			}
+			/* ,
 			new DropdownOption( {
 				name: 'SaveWikidata',
 				label: 'Save changes to Wikidata',
@@ -61,11 +67,10 @@ const optionsConfig = [
 
 ];
 
-const settingsConfig = {
+const settings = new mw.libs.libSettings.Settings( {
 	scriptName: 'test',
-	size: 'larger'
-};
+	size: 'larger',
+	optionsConfig: optionsConfig
+} );
 
-const settings = new mw.libs.libSettings.Settings( optionsConfig, settingsConfig );
 settings.display();
-window.settings = settings;
