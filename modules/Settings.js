@@ -136,7 +136,7 @@ export default class Settings {
 	}
 
 	displayMain() {
-		const internalUI = this.genInternalUI();
+		const self = this;
 
 		const SettingsDialog = function ( config ) {
 			SettingsDialog.super.call( this, config );
@@ -153,11 +153,10 @@ export default class Settings {
 
 		SettingsDialog.prototype.initialize = function () {
 			SettingsDialog.super.prototype.initialize.call( this );
-			this.content = internalUI;
+			this.content = self.genInternalUI();
 			this.$body.append( this.content.$element );
 		};
 
-		const self = this;
 		SettingsDialog.prototype.getActionProcess = function ( action ) {
 			if ( action === 'save' ) {
 				return new OO.ui.Process( () => {
@@ -172,10 +171,17 @@ export default class Settings {
 				} );
 			}
 
+			/* Disable show defaults button if user settings are default;
+			** have another button next to show default to 'show your current saved settings' (which is disabled if haven't modified yet )
+			*/
 			if ( action === 'reset' ) {
 				return new OO.ui.Process( () => {
 					self.reset();
+					const currentPageName = this.content.getCurrentPageName();
 					this.content = self.genInternalUI();
+					if ( currentPageName ) {
+						this.content.setPage( currentPageName );
+					}
 					this.$body.html( this.content.$element );
 				} );
 			}
@@ -185,8 +191,10 @@ export default class Settings {
 
 		SettingsDialog.prototype.getHoldProcess = function ( data ) {
 			const process = SettingsDialog.parent.prototype.getHoldProcess.call( this, data );
-			process.next( data );
-			process.next( () => this.popPending() );
+			if ( data ) {
+				process.next( data );
+				process.next( () => this.popPending() );
+			}
 			return process;
 		};
 
