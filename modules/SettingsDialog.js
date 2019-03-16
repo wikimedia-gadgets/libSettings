@@ -5,9 +5,8 @@ export default function wrapSettingsDialog() {
 			this.element = element;
 			this.element.preferences.forEach( ( element2 ) => {
 				if ( element2.header ) {
-					const fieldset = new OO.ui.FieldsetLayout( {
-						label: element2.header
-					} );
+					element2.UIconfig.label = element2.header;
+					const fieldset = new OO.ui.FieldsetLayout( element2.UIconfig );
 					const fieldLayouts = element2.options.map( ( option ) => option.UI() );
 					fieldset.addItems( fieldLayouts );
 					this.$element.append( fieldset.$element );

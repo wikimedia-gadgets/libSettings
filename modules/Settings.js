@@ -28,7 +28,7 @@ export default class Settings {
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = `Could not save settings for ${this.scriptName}.`;
 		this.runOverOptionsConfig( ( option ) => {
-			if ( option.helpInline !== undefined ) {
+			if ( typeof option.helpInline === 'undefined' ) {
 				option.helpInline = config.helpInline;
 			}
 		} );

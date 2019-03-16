@@ -12,7 +12,7 @@ export default class BooleanOption extends Option {
 		this.UIconfig.selected = this.value;
 		this.checkbox = new OO.ui.CheckboxInputWidget( this.UIconfig );
 		return new OO.ui.FieldLayout( this.checkbox, {
-			help: this.helptip,
+			help: this.help,
 			label: this.label,
 			helpInline: this.helpInline,
 			align: 'inline'

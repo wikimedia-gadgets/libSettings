@@ -1,7 +1,7 @@
 import '../modules/index.js';
 const BooleanOption = mw.libs.libSettings.BooleanOption;
 const NumberOption = mw.libs.libSettings.NumberOption;
-// const DropdownOption = mw.libs.libSettings.DropdownOption;
+const DropdownOption = mw.libs.libSettings.DropdownOption;
 const optionsConfig = [
 	{
 		title: 'Main',
@@ -22,29 +22,31 @@ const optionsConfig = [
 					new BooleanOption( {
 						name: 'AddToRedirect',
 						label: 'Allow additions to redirects',
-						helptip: 'When checked, redirects will have ',
+						help: 'When checked, redirects will have ',
 						defaultValue: true
 					} ),
 					new BooleanOption( {
 						name: 'AddWikidata',
 						label: 'Upload to wikidata when adding a short description.',
-						helptip: 'When checked.. ',
+						help: 'When checked.. ',
 						defaultValue: true
 					} )
-				]
-			}
-			/* ,
+				],
+				UIconfig: {
+					help: ''
+				}
+			},
 			new DropdownOption( {
 				name: 'SaveWikidata',
 				label: 'Save changes to Wikidata',
-				helptip: 'foooooo',
+				help: 'foooooo',
 				defaultValue: 'add',
 				values: [
-					[ 'add', 'Only on additions (default)' ],
-					[ 'all', 'On all changes' ],
-					[ 'never', 'Never' ]
+					{ data: 'add', label: 'Only on additions (default)' },
+					{ data: 'all', label: 'On all changes' },
+					{ data: 'never', label: 'Never' }
 				]
-			} )*/
+			} )
 		]
 	}, /*
 
@@ -60,7 +62,7 @@ const optionsConfig = [
 			new BooleanOption( {
 				name: 'ClashFix',
 				label: 'Disable css used to prevent content jump.',
-				helptip: "You'd want to this if you have another script that clashes with this one, such as User:Yair_rand/WikidataInfo.js.",
+				help: "You'd want to this if you have another script that clashes with this one, such as User:Yair_rand/WikidataInfo.js.",
 				defaultValue: false
 			} )
 		]

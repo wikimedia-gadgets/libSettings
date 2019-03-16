@@ -15,12 +15,12 @@
 
 export default class Option {
 	constructor( config, type ) {
-		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
+		this.values = config.values;
 		this.UIconfig = config.UIconfig || {};
 		this.label = config.label;
-		this.helptip = config.helptip;
+		this.help = config.help;
 		this.type = type;
 		this.FieldLayout = true;
 		this.validInput = true;
