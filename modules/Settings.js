@@ -1,4 +1,5 @@
 import wrapSettingsDialog from 'SettingsDialog.js';
+
 /**
  * @param {Object} settingsConfig
  * @property {string} settingsConfig.scriptName
@@ -26,7 +27,11 @@ export default class Settings {
 		this.title = config.title || 'Settings';
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = `Could not save settings for ${this.scriptName}.`;
-		this.helpInline = true;
+		this.runOverOptionsConfig( ( option ) => {
+			if ( option.helpInline !== undefined ) {
+				option.helpInline = config.helpInline;
+			}
+		} );
 	}
 
 	/* Traverse through optionsConfig and run the function over each option

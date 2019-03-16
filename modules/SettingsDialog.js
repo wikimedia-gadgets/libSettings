@@ -41,7 +41,11 @@ export default function wrapSettingsDialog() {
 			let internalUI;
 
 			const pages = this.settings.optionsConfig.map( ( element ) => {
-				return new Page( element.title, { padded: onePage, scrollabe: false }, element );
+				return new Page(
+					element.title,
+					{ padded: onePage, scrollabe: false },
+					element
+				);
 			} );
 
 			if ( !onePage ) {

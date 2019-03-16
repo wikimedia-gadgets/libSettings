@@ -9,10 +9,11 @@ const optionsConfig = [
 			new NumberOption( {
 				name: 'InputWidth',
 				label: 'Width of editing input (em)',
+				helptip: 'worth a damn',
 				defaultValue: 35,
-				values: {
+				UIconfig: {
 					min: 20,
-					max: 1000
+					max: 800
 				}
 			} ),
 			{
@@ -70,6 +71,7 @@ const optionsConfig = [
 const settings = new mw.libs.libSettings.Settings( {
 	scriptName: 'test',
 	size: 'large',
+	helpInline: true,
 	optionsConfig: optionsConfig
 } );
 

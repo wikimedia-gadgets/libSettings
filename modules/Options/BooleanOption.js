@@ -4,15 +4,13 @@ import Option from 'Option.js';
  */
 export default class BooleanOption extends Option {
 	constructor( config ) {
-		super( config, 'Boolean', [ 'boolean' ] );
+		super( config, 'Boolean' );
 	}
 
 	UI() {
-		this.checkbox = new OO.ui.CheckboxInputWidget( {
-			name: this.name,
-			selected: this.value
-		} );
-
+		this.UIconfig.name = this.name;
+		this.UIconfig.selected = this.value;
+		this.checkbox = new OO.ui.CheckboxInputWidget( this.UIconfig );
 		return new OO.ui.FieldLayout( this.checkbox, {
 			help: this.helptip,
 			label: this.label,

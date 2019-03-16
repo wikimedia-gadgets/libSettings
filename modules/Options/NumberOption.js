@@ -8,14 +8,10 @@ export default class NumberOption extends Option {
 	}
 
 	UI() {
-		this.numberInput = new OO.ui.NumberInputWidget( {
-			name: this.name,
-			classes: [ 'libSettings-numberInput' ],
-			input: { value: this.value },
-			min: this.values.min,
-			max: this.values.max
-		} );
-
+		this.UIconfig.name = this.name;
+		this.UIconfig.classes = [ 'libSettings-numberInput' ];
+		this.UIconfig.value = this.value;
+		this.numberInput = new OO.ui.NumberInputWidget( this.UIconfig );
 		return new OO.ui.FieldLayout( this.numberInput, {
 			text: this.label,
 			help: this.helptip,

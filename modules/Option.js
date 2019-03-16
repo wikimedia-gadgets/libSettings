@@ -17,13 +17,18 @@ export default class Option {
 	constructor( config, type ) {
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
-		this.values = config.values;
+		this.UIconfig = config.UIconfig || {};
 		this.label = config.label;
 		this.helptip = config.helptip;
 		this.type = type;
 		this.FieldLayout = true;
-		this.helpInline = true || config.helpinline; /* TODO would want to be able to set all helpinline for a panel or entire settings window
-		(e.g for twinkle would want to set all helpinline to true (probably don't want to mix types for at-least a panel - make it an optionsConfig preference for each panel and for the whole optionsConfig )) */
+	}
+
+	static assign( object1, object2 ) {
+		// eslint-disable-next-line no-restricted-syntax
+		object2.keys().forEach( ( key ) => {
+
+		} );
 	}
 
 	get value() {
