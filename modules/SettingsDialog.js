@@ -65,6 +65,10 @@ export default function wrapSettingsDialog() {
 
 		initialize() {
 			super.initialize();
+			this.settings.runOverOptionsConfig( ( option ) => {
+				option.on( 'invalidInput', () => console.log( 'foo' ) );
+				option.on( 'validInput', () => console.log( 'bar' ) );
+			} );
 			this.content = this.genInternalUI();
 			this.$body.append( this.content.$element );
 		}

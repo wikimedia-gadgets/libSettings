@@ -13,8 +13,9 @@
  * @param {...string} basetypes Type(s) to validate against (Defined by extending classes).
 */
 
-export default class Option {
+export default class Option extends OO.EventEmitter {
 	constructor( config, type ) {
+		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
 		this.UIconfig = config.UIconfig || {};
@@ -22,13 +23,7 @@ export default class Option {
 		this.helptip = config.helptip;
 		this.type = type;
 		this.FieldLayout = true;
-	}
-
-	static assign( object1, object2 ) {
-		// eslint-disable-next-line no-restricted-syntax
-		object2.keys().forEach( ( key ) => {
-
-		} );
+		this.validInput = true;
 	}
 
 	get value() {
@@ -41,6 +36,16 @@ export default class Option {
 
 	reset() {
 		this.customValue = undefined;
+	}
+
+	disableSave() {
+		this.validInput = false;
+		this.emit( 'invalidInput' );
+	}
+
+	enableSave() {
+		this.validInput = true;
+		this.emit( 'validInput' );
 	}
 
 	/**
