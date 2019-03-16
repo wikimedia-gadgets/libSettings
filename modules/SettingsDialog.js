@@ -19,6 +19,7 @@ export default function wrapSettingsDialog() {
 
 		setupOutlineItem() {
 			this.outlineItem.setLabel( this.element.title );
+			this.outlineItem.setLevel( this.element.level );
 		}
 	}
 
@@ -40,7 +41,7 @@ export default function wrapSettingsDialog() {
 			let internalUI;
 
 			const pages = this.settings.optionsConfig.map( ( element ) => {
-				return new Page( element.title, { padded: onePage }, element );
+				return new Page( element.title, { padded: onePage, scrollabe: false }, element );
 			} );
 
 			if ( !onePage ) {
@@ -52,6 +53,8 @@ export default function wrapSettingsDialog() {
 			} else {
 				internalUI = pages[ 0 ];
 			}
+
+			this.outerHeight = pages[ 0 ].$element.outerHeight( true );
 
 			return internalUI;
 		}
@@ -82,7 +85,10 @@ export default function wrapSettingsDialog() {
 			if ( action === 'reset' ) {
 				return new OO.ui.Process( () => {
 					this.settings.reset();
-					const currentPageName = this.content.getCurrentPageName();
+					let currentPageName;
+					if ( this.content.getCurrentPageName ) {
+						currentPageName = this.content.getCurrentPageName();
+					}
 					this.content = this.genInternalUI();
 					if ( currentPageName ) {
 						this.content.setPage( currentPageName );
@@ -104,7 +110,7 @@ export default function wrapSettingsDialog() {
 		}
 
 		getBodyHeight() {
-			return this.content.$element.outerHeight( 900 ); // TEMP, need to figure out how to properly make window size
+			return ( this.content.$element.outerWidth( true ) * 1 / 1.61803398875 ); // golden ratio
 		}
 	}
 

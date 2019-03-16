@@ -54,6 +54,7 @@ const optionsConfig = [
 	*/
 	{
 		title: 'Advanced',
+		level: 1,
 		preferences: [
 			new BooleanOption( {
 				name: 'ClashFix',
@@ -68,7 +69,7 @@ const optionsConfig = [
 
 const settings = new mw.libs.libSettings.Settings( {
 	scriptName: 'test',
-	size: 'larger',
+	size: 'large',
 	optionsConfig: optionsConfig
 } );
 

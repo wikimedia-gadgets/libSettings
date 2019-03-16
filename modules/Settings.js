@@ -103,7 +103,8 @@ export default class Settings {
 		const SettingsDialog = wrapSettingsDialog();
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {
-			size: this.size
+			size: this.size,
+			classes: [ 'settingsDialog' ]
 		}, this );
 
 		// Create and append a window manager
