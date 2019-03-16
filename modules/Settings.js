@@ -55,20 +55,22 @@ export default class Settings {
 	*/
 	get() {
 		if ( !this.options ) {
-			this.optionsText = mw.user.options.get( this.optionName );
-			this.userOptions = JSON.parse( this.optionsText );
-			// transfer userOptions to optionsConfig
-			this.runOverOptionsConfig( ( option ) => {
-				const userOption = this.userOptions[ option.name ];
-				if ( userOption !== undefined ) {
-					option.customValue = userOption;
-				}
-			} );
+			mw.loader.using( [ 'mediawiki.user' ] ).then( () => {
+				this.optionsText = mw.user.options.get( this.optionName );
+				this.userOptions = JSON.parse( this.optionsText ) || {};
+				// transfer userOptions to optionsConfig
+				this.runOverOptionsConfig( ( option ) => {
+					const userOption = this.userOptions[ option.name ];
+					if ( userOption !== undefined ) {
+						option.customValue = userOption;
+					}
+				} );
 
-			// Then retrieve it, along with default Option as necessary
-			this.options = {};
-			this.runOverOptionsConfig( ( option ) => {
-				this.options[ option.name ] = option.value;
+				// Then retrieve it, along with default Option as necessary
+				this.options = {};
+				this.runOverOptionsConfig( ( option ) => {
+					this.options[ option.name ] = option.value;
+				} );
 			} );
 		}
 		return this.options;
