@@ -99,113 +99,11 @@ export default class Settings {
 		this.options = undefined;
 	}
 
-	genInternalUI() {
-		const pages = [];
-
-		const onePage = this.optionsConfig.length === 1;
-		this.optionsConfig.forEach( ( element ) => {
-			const Temp = function ( name, config ) {
-				Temp.super.call( this, name, config );
-				element.preferences.forEach( ( option ) => {
-					this.$element.append( option.UI().$element );
-				} );
-			};
-
-			OO.inheritClass( Temp, OO.ui.PageLayout );
-			Temp.prototype.setupOutlineItem = function () {
-				this.outlineItem.setLabel( element.title );
-			};
-
-			const temp = new Temp( element.title, { padded: onePage } );
-			pages.push( temp );
-		} );
-
-		let internalUI;
-
-		if ( !onePage ) {
-			internalUI = new OO.ui.BookletLayout( {
-				outlined: true
-			} );
-
-			internalUI.addPages( pages );
-		} else {
-			internalUI = pages[ 0 ];
-		}
-
-		return internalUI;
-	}
-
 	displayMain() {
-		const self = this;
-
-		const SettingsDialog = function ( config ) {
-			SettingsDialog.super.call( this, config );
-		};
-
-		OO.inheritClass( SettingsDialog, OO.ui.ProcessDialog );
-		SettingsDialog.static.name = 'settingsDialog';
-		SettingsDialog.static.title = this.title;
-		SettingsDialog.static.actions = [
-			{ action: 'save', label: 'Save settings', flags: [ 'primary', 'progressive' ] },
-			{ label: 'Cancel', flags: [ 'safe', 'destructive' ] },
-			{ action: 'reset', label: 'Show defaults' }
-		];
-
-		SettingsDialog.prototype.initialize = function () {
-			SettingsDialog.super.prototype.initialize.call( this );
-			this.content = self.genInternalUI();
-			this.$body.append( this.content.$element );
-		};
-
-		SettingsDialog.prototype.getActionProcess = function ( action ) {
-			if ( action === 'save' ) {
-				return new OO.ui.Process( () => {
-					const promise = self.save();
-					this.pushPending();
-					this.close( promise );
-					promise.then( () => {
-						mw.notify( self.saveMessage );
-					}, () => {
-						mw.notify( self.saveFailMessage );
-					} );
-				} );
-			}
-
-			/* Disable show defaults button if user settings are default;
-			** have another button next to show default to 'show your current saved settings' (which is disabled if haven't modified yet )
-			*/
-			if ( action === 'reset' ) {
-				return new OO.ui.Process( () => {
-					self.reset();
-					const currentPageName = this.content.getCurrentPageName();
-					this.content = self.genInternalUI();
-					if ( currentPageName ) {
-						this.content.setPage( currentPageName );
-					}
-					this.$body.html( this.content.$element );
-				} );
-			}
-
-			return SettingsDialog.parent.prototype.getActionProcess.call( this, action );
-		};
-
-		SettingsDialog.prototype.getHoldProcess = function ( data ) {
-			const process = SettingsDialog.parent.prototype.getHoldProcess.call( this, data );
-			if ( data ) {
-				process.next( data );
-				process.next( () => this.popPending() );
-			}
-			return process;
-		};
-
-		SettingsDialog.prototype.getBodyHeight = function () {
-			return this.content.$element.outerHeight( 900 ); // TEMP, need to figure out how to properly make window size
-		};
-
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {
 			size: this.size
-		} );
+		}, this );
 
 		// Create and append a window manager
 		const windowManager = new OO.ui.WindowManager();
