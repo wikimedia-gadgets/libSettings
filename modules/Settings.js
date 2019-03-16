@@ -22,12 +22,7 @@ export default class Settings {
 		optionsConfig,
 		settingsConfig
 	) {
-		// optionsConfig
 		this.optionsConfig = optionsConfig;
-		/* this.defaultOptions = {};
-		this.runOverOptionsConfig( ( option ) => {
-			this.defaultOptions[ option.name ] = option.defaultValue;
-		} );*/
 		this.scriptName = settingsConfig.scriptName;
 		this.optionName = `userjs-${ settingsConfig.optionName || settingsConfig.scriptName }`;
 		this.size = settingsConfig.size;
@@ -36,9 +31,7 @@ export default class Settings {
 		this.saveFailMessage = settingsConfig.customSaveFailMessage || `Could not save settings for ${this.scriptName}.`;
 	}
 
-	/* Traverse through optionsConfig and get the requested value from the key,
-	 * returning as a pair of option name and that value.
-	 * settings menu
+	/* Traverse through optionsConfig andrun the function over each option
 	 * @function
 	 * @return {Object} */
 	runOverOptionsConfig( func ) {
