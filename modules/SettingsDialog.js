@@ -26,13 +26,6 @@ export default function wrapSettingsDialog() {
 		constructor( config, self ) {
 			super( config );
 			this.settings = self;
-			SettingsDialog.static.name = 'settingsDialog';
-			SettingsDialog.static.title = this.settings.title;
-			SettingsDialog.static.actions = [
-				{ action: 'save', label: 'Save settings', flags: [ 'primary', 'progressive' ] },
-				{ label: 'Cancel', flags: [ 'safe', 'destructive' ] },
-				{ action: 'reset', label: 'Show defaults' }
-			];
 		}
 
 		genInternalUI() {
@@ -68,17 +61,42 @@ export default function wrapSettingsDialog() {
 			this.$body.append( this.content.$element );
 		}
 
+		setButtonStatus( action, enabled ) {
+			const abilities = {};
+			abilities[ action ] = enabled;
+			this.actions.setAbilities( abilities );
+		}
+
+		/** saveStatus is true
+		 * if all inputs are valid
+		 * and if user changed
+		 * @return {boolean} saveStatus
+		 */
+		allowSave() {
+			let validInput = true;
+			let userChanged = false;
+			this.settings.runOverOptionsConfig( ( option ) => {
+				if ( !option.validInput ) {
+					validInput = false;
+				}
+				if ( option.getUIvalue() != option.value ) {
+					userChanged = true;
+				}
+			} );
+			const saveStatus = validInput && userChanged;
+			return saveStatus;
+		}
+
+		updateSaveButton() {
+			this.setButtonStatus( 'save', allowSave() );
+		}
+
 		getActionProcess( action ) {
 			if ( action === 'save' ) {
 				return new OO.ui.Process( () => {
 					const promise = this.settings.save();
 					this.pushPending();
 					this.close( promise );
-					promise.then( () => {
-						mw.notify( this.settings.saveMessage );
-					}, () => {
-						mw.notify( this.settings.saveFailMessage );
-					} );
 				} );
 			}
 

@@ -16,10 +16,11 @@ import wrapSettingsDialog from 'SettingsDialog.js';
  *
 */
 
-export default class Settings {
+export default class Settings extends OO.EventEmitter {
 	constructor(
 		config
 	) {
+		super();
 		this.optionsConfig = config.optionsConfig;
 		this.scriptName = config.scriptName;
 		this.optionName = `userjs-${ config.optionName || config.scriptName }`;
@@ -27,11 +28,19 @@ export default class Settings {
 		this.title = config.title || 'Settings';
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = `Could not save settings for ${this.scriptName}.`;
+		this.saveSettings = ( config.saveSettings !== undefined ) ? config.saveSettings : true;
+		this.notifyUponSave = ( config.notifyUponSave !== undefined ) ?
+			config.notifyUponSave : this.saveSettings;
+		this.userOptions = config.userOptions || {};
 		this.runOverOptionsConfig( ( option ) => {
-			if ( typeof option.helpInline === 'undefined' ) {
+			if ( option.helpInline === undefined ) {
 				option.helpInline = config.helpInline;
 			}
 		} );
+		this.saveSettingsLabel = config.saveSettingsLabel || 'Save settings';
+		this.cancelLabel = config.cancelLabel || 'Cancel';
+		this.showDefaultsLabel = config.showDefaultsLabel || 'Show defaults';
+
 	}
 
 	/* Traverse through optionsConfig and run the function over each option
@@ -49,31 +58,50 @@ export default class Settings {
 		} );
 	}
 
+	load() {
+		this.optionsText = mw.user.options.get( this.optionName );
+		this.userOptions = JSON.parse( this.optionsText ) || {};
+	}
+
+	transfer() {
+		// transfer userOptions to optionsConfig
+		this.runOverOptionsConfig( ( option ) => {
+			const userOption = this.userOptions[ option.name ];
+			if ( userOption !== undefined ) {
+				option.customValue = userOption;
+			}
+		} );
+
+		// Then retrieve it, along with default Option as necessary
+		this.options = {};
+		this.runOverOptionsConfig( ( option ) => {
+			this.options[ option.name ] = option.value;
+		} );
+		return this.options;
+	}
+
 	/** Get settings
 	 * @func
 	 * @return {Object} { [optionName]: [optionValue],...}
 	*/
 	get() {
 		if ( !this.options ) {
-			mw.loader.using( [ 'mediawiki.user' ] ).then( () => {
-				this.optionsText = mw.user.options.get( this.optionName );
-				this.userOptions = JSON.parse( this.optionsText ) || {};
-				// transfer userOptions to optionsConfig
-				this.runOverOptionsConfig( ( option ) => {
-					const userOption = this.userOptions[ option.name ];
-					if ( userOption !== undefined ) {
-						option.customValue = userOption;
-					}
-				} );
-
-				// Then retrieve it, along with default Option as necessary
-				this.options = {};
-				this.runOverOptionsConfig( ( option ) => {
-					this.options[ option.name ] = option.value;
-				} );
-			} );
+			if ( this.saveSettings ) {
+				this.load();
+			}
+			this.transfer();
 		}
 		return this.options;
+	}
+
+	notifySave( status ) {
+		if ( this.notifyUponSave ) {
+			if ( status ) {
+				mw.notify( this.saveMessage );
+			} else {
+				mw.notify( this.saveFailMessage );
+			}
+		}
 	}
 
 	/** Save settings
@@ -81,20 +109,29 @@ export default class Settings {
 	 * @returns {Promise}
 	 */
 	save() {
-		return mw.loader.using( 'mediawiki.api' ).then( () => {
-			this.API = new mw.Api( {
-				ajax: {
-					headers: {
-						'Api-User-Agent': `Script ${this.scriptName} using libSettings.`
-					}
-				}
-			} );
-			this.newUserOptions = {};
-			this.runOverOptionsConfig( ( option ) => {
-				this.newUserOptions[ option.name ] = option.getCustomUIValue();
-			} );
-			return this.API.saveOption( this.optionName, JSON.stringify( this.newUserOptions ) );
+		this.newUserOptions = {};
+		this.runOverOptionsConfig( ( option ) => {
+			this.newUserOptions[ option.name ] = option.getCustomUIValue();
 		} );
+
+		if ( this.saveSettings ) {
+			return mw.loader.using( 'mediawiki.api' ).then( () => {
+				this.API = new mw.Api( {
+					ajax: {
+						headers: {
+							'Api-User-Agent': `Script ${this.scriptName} using libSettings.`
+						}
+					}
+				} );
+				return this.API.saveOption(
+					this.optionName,
+					JSON.stringify( this.newUserOptions )
+				).then( () => this.notifySave( true ), () => this.notifySave( false ) );
+			} );
+		} else {
+			this.notifySave( true );
+			return () => this.newUserOptions;
+		}
 	}
 
 	/** Reset optionsConfig
@@ -108,11 +145,26 @@ export default class Settings {
 
 	displayMain() {
 		const SettingsDialog = wrapSettingsDialog();
+		SettingsDialog.static.name = 'settingsDialog';
+		SettingsDialog.static.title = this.title;
+		SettingsDialog.static.actions = [
+			{ action: 'save', label: this.saveSettingsLabel, flags: [ 'primary', 'progressive' ] },
+			{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
+			{ action: 'reset', label: this.showDefaultsLabel }
+		];
+
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {
 			size: this.size,
 			classes: [ 'settingsDialog' ]
 		}, this );
+
+		// Bindings
+		this.runOverOptionsConfig( ( option ) =>{
+			option.connect( settingsDialog, {
+				change: 'changeHandler'
+			} );
+		} );
 
 		// Create and append a window manager
 		const windowManager = new OO.ui.WindowManager();
