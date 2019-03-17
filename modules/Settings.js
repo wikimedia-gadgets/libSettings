@@ -40,6 +40,7 @@ export default class Settings extends OO.EventEmitter {
 		this.saveSettingsLabel = config.saveSettingsLabel || 'Save settings';
 		this.cancelLabel = config.cancelLabel || 'Cancel';
 		this.showDefaultsLabel = config.showDefaultsLabel || 'Show defaults';
+		this.showCurrentSettingsLabel = config.showCurrentSettingsLabel || 'Show current settings';
 
 	}
 
@@ -141,7 +142,8 @@ export default class Settings extends OO.EventEmitter {
 		SettingsDialog.static.actions = [
 			{ action: 'save', label: this.saveSettingsLabel, flags: [ 'primary', 'progressive' ] },
 			{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
-			{ action: 'showDefault', label: this.showDefaultsLabel }
+			{ action: 'showDefault', label: this.showDefaultsLabel },
+			{ action: 'showCurrentSettings', label: this.showCurrentSettingsLabel }
 		];
 
 		// Make the window.

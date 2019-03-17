@@ -86,7 +86,8 @@ export default function wrapSettingsDialog() {
 			} );
 			this.actions.setAbilities( {
 				save: validInput && userChanged,
-				showDefault: showDefaultStatus
+				showDefault: showDefaultStatus,
+				showCurrentSettings: validInput && userChanged
 			} );
 		}
 
@@ -124,9 +125,9 @@ export default function wrapSettingsDialog() {
 				} );
 			}
 
-			if ( action === 'showCurrentSettings ' ) {
+			if ( action === 'showCurrentSettings' ) {
 				return new OO.ui.Process( () => {
-					this.regenUI( 'customValue' );
+					this.regenUI( 'value' );
 				} );
 			}
 
