@@ -1,4 +1,3 @@
-import 'css.js';
 import Option from 'Option.js';
 import Settings from 'Settings.js';
 import CheckboxOption from 'Options/CheckboxOption.js';

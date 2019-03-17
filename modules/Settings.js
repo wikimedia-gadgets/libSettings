@@ -174,7 +174,7 @@ export default class Settings extends OO.EventEmitter {
 
 		windowManager.addWindows( [ settingsDialog ] );
 		windowManager.openWindow( settingsDialog );
-		return settingsDialog;
+		return windowManager;
 	}
 
 	display() {
