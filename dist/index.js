@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./test/test.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./modules/index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -203,18 +203,6 @@ eval("\n\nmw.util.addCSS(\".libSettings-numberInput {\\n\\t\\tmax-width: 15em\\n
 
 "use strict";
 eval("\n\n__webpack_require__(/*! css.js */ \"./modules/css.js\");\n\nvar _Option = __webpack_require__(/*! Option.js */ \"./modules/Option.js\");\n\nvar _Option2 = _interopRequireDefault(_Option);\n\nvar _Settings = __webpack_require__(/*! Settings.js */ \"./modules/Settings.js\");\n\nvar _Settings2 = _interopRequireDefault(_Settings);\n\nvar _CheckboxOption = __webpack_require__(/*! Options/CheckboxOption.js */ \"./modules/Options/CheckboxOption.js\");\n\nvar _CheckboxOption2 = _interopRequireDefault(_CheckboxOption);\n\nvar _DateOption = __webpack_require__(/*! Options/DateOption.js */ \"./modules/Options/DateOption.js\");\n\nvar _DateOption2 = _interopRequireDefault(_DateOption);\n\nvar _TextOption = __webpack_require__(/*! Options/TextOption.js */ \"./modules/Options/TextOption.js\");\n\nvar _TextOption2 = _interopRequireDefault(_TextOption);\n\nvar _NumberOption = __webpack_require__(/*! Options/NumberOption.js */ \"./modules/Options/NumberOption.js\");\n\nvar _NumberOption2 = _interopRequireDefault(_NumberOption);\n\nvar _DropdownOption = __webpack_require__(/*! Options/DropdownOption.js */ \"./modules/Options/DropdownOption.js\");\n\nvar _DropdownOption2 = _interopRequireDefault(_DropdownOption);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nmw.libs.libSettings = {};\nmw.libs.libSettings.Option = _Option2.default;\nmw.libs.libSettings.Settings = _Settings2.default;\nmw.libs.libSettings.CheckboxOption = _CheckboxOption2.default;\nmw.libs.libSettings.DateOption = _DateOption2.default;\nmw.libs.libSettings.TextOption = _TextOption2.default;\nmw.libs.libSettings.NumberOption = _NumberOption2.default;\nmw.libs.libSettings.DropdownOption = _DropdownOption2.default;\n\n//# sourceURL=webpack:///./modules/index.js?");
-
-/***/ }),
-
-/***/ "./test/test.js":
-/*!**********************!*\
-  !*** ./test/test.js ***!
-  \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n__webpack_require__(/*! ../modules/index.js */ \"./modules/index.js\");\n\nvar CheckboxOption = mw.libs.libSettings.CheckboxOption;\nvar NumberOption = mw.libs.libSettings.NumberOption;\nvar DropdownOption = mw.libs.libSettings.DropdownOption;\nvar TextOption = mw.libs.libSettings.TextOption;\nvar shortdescHelper = [{\n\ttitle: 'Shortdesc-helper',\n\tpreferences: [new NumberOption({\n\t\tname: 'InputWidth',\n\t\tlabel: 'Width of editing input in em (default 35)',\n\t\thelptip: 'worth a damn',\n\t\tdefaultValue: 35,\n\t\tUIconfig: {\n\t\t\tmin: 10,\n\t\t\tmax: 400,\n\t\t\tvalidate: /\\d\\d/\n\t\t}\n\t}), new CheckboxOption({\n\t\tname: 'AddToRedirect',\n\t\tlabel: 'Allow additions of short descriptions to redirects',\n\t\thelp: 'When checked, redirects will have an \"add\" button to add a short description. (default off)',\n\t\tdefaultValue: true\n\t}), new DropdownOption({\n\t\tname: 'SaveWikidata',\n\t\tlabel: 'Save changes to Wikidata',\n\t\thelp: 'foooooo '.repeat(40),\n\t\tdefaultValue: 'add',\n\t\tvalues: [{ data: 'add', label: 'Only on additions (default)' }, { data: 'all', label: 'On all changes' }, { data: 'never', label: 'Never' }]\n\t}), new CheckboxOption({\n\t\tname: 'ClashFix',\n\t\tlabel: 'Disable css used to prevent content jump.',\n\t\thelp: \"You'd want to this if you have another script that clashes with this one, such as User:Yair_rand/WikidataInfo.js.\",\n\t\tdefaultValue: false\n\t})]\n}];\n\nvar replyLink = [{\n\ttitle: 'Reply link',\n\tpreferences: [new TextOption({\n\t\tname: 'replyLinkPreloadPingTpl',\n\t\tlabel: 'Some code with a ##, \"{{u|##}}, ',\n\t\thelp: 'Which ping template to preload. For {{re}} use \"{{re|##}} \", etc. The text ## will be replaced with a username.',\n\t\tdefaultValue: '{{u|##}}',\n\t\tUIconfig: {\n\t\t\tvalidate: /##/\n\t\t}\n\t})]\n}];\n\nvar settings = new mw.libs.libSettings.Settings({\n\tscriptName: 'test',\n\thelpInline: true,\n\tsize: 'large',\n\toptionsConfig: shortdescHelper.concat(replyLink)\n});\n\nsettings.display();\nwindow.settings = settings;\n\n//# sourceURL=webpack:///./test/test.js?");
 
 /***/ })
 
