@@ -134,15 +134,6 @@ export default class Settings extends OO.EventEmitter {
 		}
 	}
 
-	/** Reset optionsConfig
-	 * Resets the optionsconfig (but does not save)
-	 */
-
-	reset() {
-		this.runOverOptionsConfig( ( option ) => option.reset() );
-		this.options = undefined;
-	}
-
 	displayMain() {
 		const SettingsDialog = wrapSettingsDialog();
 		SettingsDialog.static.name = 'settingsDialog';
@@ -150,7 +141,7 @@ export default class Settings extends OO.EventEmitter {
 		SettingsDialog.static.actions = [
 			{ action: 'save', label: this.saveSettingsLabel, flags: [ 'primary', 'progressive' ] },
 			{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
-			{ action: 'reset', label: this.showDefaultsLabel }
+			{ action: 'showDefault', label: this.showDefaultsLabel }
 		];
 
 		// Make the window.
@@ -179,7 +170,7 @@ export default class Settings extends OO.EventEmitter {
 
 	display() {
 		this.get();
-		mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then( () => {
+		return mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then( () => {
 			return this.displayMain();
 		} );
 	}

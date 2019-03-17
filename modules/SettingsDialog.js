@@ -1,17 +1,19 @@
 export default function wrapSettingsDialog() {
 	class Page extends OO.ui.PageLayout {
-		constructor( name, config, element ) {
+		constructor( name, config, element, value ) {
 			super( name, config );
 			this.element = element;
 			this.element.preferences.forEach( ( element2 ) => {
 				if ( element2.header ) {
 					element2.UIconfig.label = element2.header;
 					const fieldset = new OO.ui.FieldsetLayout( element2.UIconfig );
-					const fieldLayouts = element2.options.map( ( option ) => option.UI() );
+					const fieldLayouts = element2.options.map(
+						( option ) => option.buildUI( value )
+					);
 					fieldset.addItems( fieldLayouts );
 					this.$element.append( fieldset.$element );
 				} else {
-					this.$element.append( element2.UI().$element );
+					this.$element.append( element2.buildUI( value ).$element );
 				}
 			} );
 		}
@@ -28,7 +30,7 @@ export default function wrapSettingsDialog() {
 			this.settings = self;
 		}
 
-		genInternalUI() {
+		genInternalUI( value ) {
 			const onePage = ( this.settings.optionsConfig.length === 1 );
 			let internalUI;
 
@@ -36,7 +38,8 @@ export default function wrapSettingsDialog() {
 				return new Page(
 					element.title,
 					{ padded: onePage, scrollabe: false },
-					element
+					element,
+					value
 				);
 			} );
 
@@ -57,38 +60,53 @@ export default function wrapSettingsDialog() {
 
 		initialize() {
 			super.initialize();
-			this.content = this.genInternalUI();
+			this.content = this.genInternalUI( 'value' );
 			this.$body.append( this.content.$element );
-		}
-
-		setButtonStatus( action, enabled ) {
-			const abilities = {};
-			abilities[ action ] = enabled;
-			this.actions.setAbilities( abilities );
 		}
 
 		/** saveStatus is true
 		 * if all inputs are valid
 		 * and if user changed
-		 * @return {boolean} saveStatus
 		 */
-		allowSave() {
+		changeHandler() {
 			let validInput = true;
 			let userChanged = false;
+			let showDefaultStatus = false;
 			this.settings.runOverOptionsConfig( ( option ) => {
 				if ( !option.validInput ) {
 					validInput = false;
 				}
-				if ( option.getUIvalue() != option.value ) {
+				const UIvalue = option.getUIvalue();
+				if ( UIvalue !== option.value ) {
 					userChanged = true;
 				}
+				if ( UIvalue !== option.defaultValue ) {
+					showDefaultStatus = true;
+				}
 			} );
-			const saveStatus = validInput && userChanged;
-			return saveStatus;
+			this.actions.setAbilities( {
+				save: validInput && userChanged,
+				showDefault: showDefaultStatus
+			} );
 		}
 
-		updateSaveButton() {
-			this.setButtonStatus( 'save', allowSave() );
+		regenUI( value ) {
+			let currentPageName;
+			if ( this.content.getCurrentPageName ) {
+				currentPageName = this.content.getCurrentPageName();
+			}
+			this.content = this.genInternalUI( value );
+			this.changeHandler();
+			if ( currentPageName ) {
+				this.content.setPage( currentPageName );
+			}
+			this.$body.html( this.content.$element );
+		}
+
+		getSetupProcess() {
+			const process = super.getSetupProcess();
+			process.next( () => this.changeHandler() );
+			return process;
 		}
 
 		getActionProcess( action ) {
@@ -100,21 +118,15 @@ export default function wrapSettingsDialog() {
 				} );
 			}
 
-			/* Disable show defaults button if user settings are default;
-			** have another button next to show default to 'show your current saved settings' (which is disabled if haven't modified yet )
-			*/
-			if ( action === 'reset' ) {
+			if ( action === 'showDefault' ) {
 				return new OO.ui.Process( () => {
-					this.settings.reset();
-					let currentPageName;
-					if ( this.content.getCurrentPageName ) {
-						currentPageName = this.content.getCurrentPageName();
-					}
-					this.content = this.genInternalUI();
-					if ( currentPageName ) {
-						this.content.setPage( currentPageName );
-					}
-					this.$body.html( this.content.$element );
+					this.regenUI( 'defaultValue' );
+				} );
+			}
+
+			if ( action === 'showCurrentSettings ' ) {
+				return new OO.ui.Process( () => {
+					this.regenUI( 'customValue' );
 				} );
 			}
 

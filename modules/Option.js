@@ -13,8 +13,9 @@
  * @param {...string} basetypes Type(s) to validate against (Defined by extending classes).
 */
 
-export default class Option {
+export default class Option extends OO.EventEmitter {
 	constructor( config, type ) {
+		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
 		this.values = config.values;
@@ -22,7 +23,6 @@ export default class Option {
 		this.label = config.label;
 		this.help = config.help;
 		this.type = type;
-		this.FieldLayout = true;
 		this.validInput = true;
 	}
 
@@ -34,20 +34,21 @@ export default class Option {
 		}
 	}
 
-	reset() {
-		this.customValue = undefined;
+	change() {
+		this.emit( 'change' );
 	}
 
 	/**
 	 * CreateUI.
+	 * @param {any} value
 	 * @return {OO.ui.element}
-	 * //TODO could also be a  mw.widget..how generic can the UI element returned be
-	 * prolly create a standard for what functions must be defined by output?
-	 * i.e, must satisfy certain portions of OO.ui.element to work
-	 * before we can't build the settings menu with it?
 	 */
 	UI() {
 		return mw.log.error( `UI not defined by extending class ${this.type}Option.` );
+	}
+
+	buildUI( value ) {
+		return this.UI( this[ value ] );
 	}
 
 	getUIvalue() {

@@ -7,11 +7,12 @@ export default class BooleanOption extends Option {
 		super( config, 'Boolean' );
 	}
 
-	UI() {
+	UI( value ) {
 		this.UIconfig.name = this.name;
-		this.UIconfig.selected = this.value;
-		this.checkbox = new OO.ui.CheckboxInputWidget( this.UIconfig );
-		return new OO.ui.FieldLayout( this.checkbox, {
+		this.UIconfig.selected = value;
+		this.checkboxInput = new OO.ui.CheckboxInputWidget( this.UIconfig );
+		this.checkboxInput.connect( this, { change: 'change' } );
+		return new OO.ui.FieldLayout( this.checkboxInput, {
 			help: this.help,
 			label: this.label,
 			helpInline: this.helpInline,
@@ -20,6 +21,6 @@ export default class BooleanOption extends Option {
 	}
 
 	getUIvalue() {
-		return this.checkbox.isSelected();
+		return this.checkboxInput.isSelected();
 	}
 }

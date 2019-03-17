@@ -7,16 +7,17 @@ export default class DropdownOption extends Option {
 		super( config, 'Dropdown' );
 	}
 
-	UI() {
+	UI( value ) {
 		this.UIconfig.name = this.name;
 		this.values.some( ( element, index ) => {
-			if ( element.data === this.value ) {
+			if ( element.data === value ) {
 				this.values.unshift( this.values.splice( index, 1 )[ 0 ] );
 				return true;
 			}
 		} );
 		this.UIconfig.options = this.values;
 		this.dropdownInput = new OO.ui.DropdownInputWidget( this.UIconfig );
+		this.dropdownInput.connect( this, { change: 'change' } );
 		return new OO.ui.FieldLayout( this.dropdownInput, {
 			text: this.label,
 			help: this.help,

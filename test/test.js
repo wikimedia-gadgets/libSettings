@@ -78,3 +78,4 @@ const settings = new mw.libs.libSettings.Settings( {
 } );
 
 settings.display();
+window.settings = settings;
