@@ -18,12 +18,12 @@ export default class Option extends OO.EventEmitter {
 		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
-		this.values = config.values;
 		this.UIconfig = config.UIconfig || {};
 		this.label = config.label;
 		this.help = config.help;
 		this.type = type;
 		this.validInput = true;
+		this.config = config;
 	}
 
 	get value() {

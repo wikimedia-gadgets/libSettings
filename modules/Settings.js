@@ -38,6 +38,7 @@ export default class Settings extends OO.EventEmitter {
 				option.helpInline = config.helpInline;
 			}
 		} );
+		this.height = config.height;
 		this.saveSettingsLabel = config.saveSettingsLabel || 'Save settings';
 		this.cancelLabel = config.cancelLabel || 'Cancel';
 		this.showDefaultsLabel = config.showDefaultsLabel || 'Show defaults';
@@ -143,9 +144,14 @@ export default class Settings extends OO.EventEmitter {
 		SettingsDialog.static.actions = [
 			{ action: 'save', label: this.saveSettingsLabel, flags: [ 'primary', 'progressive' ] },
 			{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
-			{ action: 'showDefault', label: this.showDefaultsLabel },
-			{ action: 'showCurrentSettings', label: this.showCurrentSettingsLabel }
+			{ action: 'showDefault', label: this.showDefaultsLabel }
 		];
+
+		if ( Object.keys( this.userOptions ).length > 0 ) {
+			SettingsDialog.static.actions.push(
+				{ action: 'showCurrentSettings', label: this.showCurrentSettingsLabel }
+			);
+		}
 
 		// Make the window.
 		const settingsDialog = new SettingsDialog( {

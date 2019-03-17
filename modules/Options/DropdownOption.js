@@ -9,13 +9,13 @@ export default class DropdownOption extends Option {
 
 	UI( value ) {
 		this.UIconfig.name = this.name;
-		this.values.some( ( element, index ) => {
+		this.UIconfig.options = this.config.values;
+		this.UIconfig.options.some( ( element, index ) => {
 			if ( element.data === value ) {
-				this.values.unshift( this.values.splice( index, 1 )[ 0 ] );
+				this.UIconfig.options.unshift( this.UIconfig.options.splice( index, 1 )[ 0 ] );
 				return true;
 			}
 		} );
-		this.UIconfig.options = this.values;
 		this.dropdownInput = new OO.ui.DropdownInputWidget( this.UIconfig );
 		this.dropdownInput.connect( this, { change: 'change' } );
 		return new OO.ui.FieldLayout( this.dropdownInput, {

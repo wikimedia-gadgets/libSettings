@@ -7,12 +7,12 @@ export default class NumberOption extends Option {
 		super( config, 'Number' );
 	}
 
-	validate( value ) {
-		const num = Number( value );
-		this.validInput = (
-			num >= ( this.UIconfig.min || -Infinity ) &&
-			num <= ( this.UIconfig.max || +Infinity )
-		);
+	validate() {
+		return this.numberInput.getValidity().then( () => {
+			this.validInput = true;
+		}, () => {
+			this.validInput = false;
+		} );
 	}
 
 	UI( value ) {
@@ -20,9 +20,8 @@ export default class NumberOption extends Option {
 		this.UIconfig.classes = [ 'libSettings-numberInput' ];
 		this.UIconfig.value = value;
 		this.numberInput = new OO.ui.NumberInputWidget( this.UIconfig );
-		this.numberInput.connect( this, { change: ( UIvalue ) => {
-			this.validate( UIvalue );
-			this.change();
+		this.numberInput.connect( this, { change: () => {
+			this.validate().then( () => this.change() );
 		} } );
 		this.validate( this.numberInput.getValue() );
 		return new OO.ui.FieldLayout( this.numberInput, {

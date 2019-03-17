@@ -12,7 +12,8 @@ const optionsConfig = [
 				defaultValue: 35,
 				UIconfig: {
 					min: 10,
-					max: 400
+					max: 400,
+					validate: /\d\d/
 				}
 			} ),
 			new BooleanOption( {
@@ -45,6 +46,8 @@ const optionsConfig = [
 const settings = new mw.libs.libSettings.Settings( {
 	scriptName: 'test',
 	helpInline: true,
+	size: 'medium',
+	height: 370,
 	optionsConfig: optionsConfig
 } );
 

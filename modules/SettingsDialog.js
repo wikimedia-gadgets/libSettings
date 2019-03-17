@@ -145,7 +145,10 @@ export default function wrapSettingsDialog() {
 		}
 
 		getBodyHeight() {
-			return ( this.content.$element.outerWidth( true ) * 1 / 1.61803398875 ); // golden ratio
+			return (
+				this.settings.height ||
+				this.content.$element.outerWidth( true ) * 1 / 1.61803398875 // golden ratio
+			);
 		}
 	}
 
