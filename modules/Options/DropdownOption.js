@@ -5,11 +5,12 @@ import Option from 'Option.js';
 export default class DropdownOption extends Option {
 	constructor( config ) {
 		super( config, 'Dropdown' );
+		this.values = config.values;
 	}
 
 	UI( value ) {
 		this.UIconfig.name = this.name;
-		this.UIconfig.options = this.config.values;
+		this.UIconfig.options = this.values;
 		this.UIconfig.options.some( ( element, index ) => {
 			if ( element.data === value ) {
 				this.UIconfig.options.unshift( this.UIconfig.options.splice( index, 1 )[ 0 ] );

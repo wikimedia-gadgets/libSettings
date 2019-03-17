@@ -2,7 +2,7 @@ import Option from 'Option.js';
 /**
  * @extends Option
  */
-export default class BooleanOption extends Option {
+export default class CheckboxOption extends Option {
 	constructor( config ) {
 		super( config, 'Boolean' );
 	}

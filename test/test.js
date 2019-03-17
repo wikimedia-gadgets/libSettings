@@ -1,9 +1,11 @@
 import '../modules/index.js';
-const BooleanOption = mw.libs.libSettings.BooleanOption;
+const CheckboxOption = mw.libs.libSettings.CheckboxOption;
 const NumberOption = mw.libs.libSettings.NumberOption;
 const DropdownOption = mw.libs.libSettings.DropdownOption;
-const optionsConfig = [
+const TextOption = mw.libs.libSettings.TextOption;
+const shortdescHelper = [
 	{
+		title: 'Shortdesc-helper',
 		preferences: [
 			new NumberOption( {
 				name: 'InputWidth',
@@ -16,7 +18,7 @@ const optionsConfig = [
 					validate: /\d\d/
 				}
 			} ),
-			new BooleanOption( {
+			new CheckboxOption( {
 				name: 'AddToRedirect',
 				label: 'Allow additions of short descriptions to redirects',
 				help: 'When checked, redirects will have an "add" button to add a short description. (default off)',
@@ -33,7 +35,7 @@ const optionsConfig = [
 					{ data: 'never', label: 'Never' }
 				]
 			} ),
-			new BooleanOption( {
+			new CheckboxOption( {
 				name: 'ClashFix',
 				label: 'Disable css used to prevent content jump.',
 				help: "You'd want to this if you have another script that clashes with this one, such as User:Yair_rand/WikidataInfo.js.",
@@ -43,12 +45,28 @@ const optionsConfig = [
 	}
 ];
 
+const replyLink = [
+	{
+		title: 'Reply link',
+		preferences: [
+			new TextOption( {
+				name: 'replyLinkPreloadPingTpl',
+				label: 'Some code with a ##, "{{u|##}}, ',
+				help: 'Which ping template to preload. For {{re}} use "{{re|##}} ", etc. The text ## will be replaced with a username.',
+				defaultValue: '{{u|##}}',
+				UIconfig: {
+					validate: /##/
+				}
+			} )
+		]
+	}
+];
+
 const settings = new mw.libs.libSettings.Settings( {
 	scriptName: 'test',
 	helpInline: true,
-	size: 'medium',
-	height: 370,
-	optionsConfig: optionsConfig
+	size: 'large',
+	optionsConfig: shortdescHelper.concat( replyLink )
 } );
 
 settings.display();

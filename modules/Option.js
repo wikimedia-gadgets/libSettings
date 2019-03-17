@@ -14,16 +14,14 @@
 */
 
 export default class Option extends OO.EventEmitter {
-	constructor( config, type ) {
+	constructor( config ) {
 		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
 		this.UIconfig = config.UIconfig || {};
 		this.label = config.label;
 		this.help = config.help;
-		this.type = type;
 		this.validInput = true;
-		this.config = config;
 	}
 
 	get value() {

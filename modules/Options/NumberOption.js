@@ -1,38 +1,21 @@
-import Option from 'Option.js';
+import TextOption from 'Options/TextOption.js';
 /**
  * @extends Option
  */
-export default class NumberOption extends Option {
+export default class NumberOption extends TextOption {
 	constructor( config ) {
-		super( config, 'Number' );
-	}
-
-	validate() {
-		return this.numberInput.getValidity().then( () => {
-			this.validInput = true;
-		}, () => {
-			this.validInput = false;
-		} );
+		super( config );
+		this.type = 'Number';
 	}
 
 	UI( value ) {
-		this.UIconfig.name = this.name;
+		super.UIconfigure( value );
 		this.UIconfig.classes = [ 'libSettings-numberInput' ];
-		this.UIconfig.value = value;
-		this.numberInput = new OO.ui.NumberInputWidget( this.UIconfig );
-		this.numberInput.connect( this, { change: () => {
-			this.validate().then( () => this.change() );
-		} } );
-		this.validate( this.numberInput.getValue() );
-		return new OO.ui.FieldLayout( this.numberInput, {
-			text: this.label,
-			help: this.help,
-			helpInline: this.helpInline,
-			align: 'top'
-		} );
+		this.UIelement = new OO.ui.NumberInputWidget( this.UIconfig );
+		return super.UIfurther();
 	}
 
 	getUIvalue() {
-		return Number( this.numberInput.getValue() );
+		return Number( this.UIelement.getValue() );
 	}
 }
