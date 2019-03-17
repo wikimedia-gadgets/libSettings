@@ -16,37 +16,34 @@ const optionsConfig = [
 					max: 800
 				}
 			} ),
+			new BooleanOption( {
+				name: 'AddToRedirect',
+				label: 'Allow additions to redirects',
+				help: 'When checked, redirects will have ',
+				defaultValue: true
+			} ),
 			{
-				header: 'checkboxes',
+				header: 'Wikidata',
 				options: [
-					new BooleanOption( {
-						name: 'AddToRedirect',
-						label: 'Allow additions to redirects',
-						help: 'When checked, redirects will have ',
-						defaultValue: true
-					} ),
 					new BooleanOption( {
 						name: 'AddWikidata',
 						label: 'Upload to wikidata when adding a short description.',
 						help: 'When checked.. ',
 						defaultValue: true
+					} ),
+					new DropdownOption( {
+						name: 'SaveWikidata',
+						label: 'Save changes to Wikidata',
+						help: 'foooooo',
+						defaultValue: 'add',
+						values: [
+							{ data: 'add', label: 'Only on additions (default)' },
+							{ data: 'all', label: 'On all changes' },
+							{ data: 'never', label: 'Never' }
+						]
 					} )
-				],
-				UIconfig: {
-					help: ''
-				}
-			},
-			new DropdownOption( {
-				name: 'SaveWikidata',
-				label: 'Save changes to Wikidata',
-				help: 'foooooo',
-				defaultValue: 'add',
-				values: [
-					{ data: 'add', label: 'Only on additions (default)' },
-					{ data: 'all', label: 'On all changes' },
-					{ data: 'never', label: 'Never' }
 				]
-			} )
+			}
 		]
 	}, /*
 
