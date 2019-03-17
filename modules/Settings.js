@@ -10,6 +10,7 @@ import wrapSettingsDialog from 'SettingsDialog.js';
  *
  * @property {Array.<Object>} config.optionsConfig
  * @property {string} config.optionsConfig[].title Header of particular set of preferences
+ * @property {string} config.optionsConfig[].level Indentation level, see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/OO.ui.OutlineOptionWidget
  * @property {(boolean|Function)} [config.optionsConfig[].show] Boolean or function that returns a
  * Boolean. Can use anonymous function when a variable is only loaded after the settings is loaded.
  * @property {...libSettings.Option} config.optionsConfig[].preferences Array of Option objects.

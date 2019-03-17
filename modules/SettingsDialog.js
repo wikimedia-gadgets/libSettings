@@ -88,7 +88,7 @@ export default function wrapSettingsDialog() {
 			this.actions.setAbilities( {
 				save: validInput && userChanged,
 				showDefault: showDefaultStatus,
-				showCurrentSettings: validInput && userChanged
+				showCurrentSettings: userChanged
 			} );
 		}
 
