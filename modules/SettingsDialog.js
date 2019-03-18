@@ -32,20 +32,22 @@ export default function wrapSettingsDialog() {
 		}
 
 		genInternalUI( value ) {
-			const onePage = ( this.settings.optionsConfig.length === 1 );
+			// ignore elements that have hide set to true
+			const realOptionsConfig = this.settings.optionsConfig.filter(
+				element => !element.hide
+			);
+			const onePage = realOptionsConfig.length === 1;
+
 			let internalUI;
 
-			const pages = this.settings.optionsConfig.reduce( ( result, element ) => {
-				if ( !element.hide ) {
-					result.push( new Page(
-						element.title,
-						{ padded: onePage, scrollabe: false },
-						element,
-						value
-					) );
-				}
-				return result;
-			}, [] );
+			const pages = realOptionsConfig.map( element => {
+				return new Page(
+					element.title,
+					{ padded: onePage, scrollabe: false },
+					element,
+					value
+				);
+			} );
 
 			if ( !onePage ) {
 				internalUI = new OO.ui.BookletLayout( {
