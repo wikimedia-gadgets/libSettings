@@ -171,10 +171,11 @@ export default class Settings extends OO.EventEmitter {
 		const windowManager = new OO.ui.WindowManager();
 
 		// eslint-disable-next-line jquery/no-global-selector
-		$( 'body' ).append( windowManager.$element );
+		document.body.appendChild( windowManager.$element[ 0 ] );
 
 		windowManager.addWindows( [ settingsDialog ] );
 		windowManager.openWindow( settingsDialog );
+
 		return windowManager;
 	}
 
