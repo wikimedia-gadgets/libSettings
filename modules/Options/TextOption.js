@@ -6,6 +6,8 @@ export default class TextOption extends Option {
 	constructor( config ) {
 		super( config );
 		this.type = 'Text';
+		this.className = 'textInput';
+		this.widget = 'TextInputWidget';
 	}
 
 	validate() {
@@ -16,19 +18,11 @@ export default class TextOption extends Option {
 		} );
 	}
 
-	UIconfigure( value ) {
+	UI( value ) {
 		this.UIconfig.name = this.name;
 		this.UIconfig.value = value;
-	}
-
-	UI( value ) {
-		this.UIconfigure( value );
-		this.UIconfig.classes = [ 'libSettings-textInput' ];
-		this.UIelement = new OO.ui.TextInputWidget( this.UIconfig );
-		return this.UIfurther();
-	}
-
-	UIfurther() {
+		this.UIconfig.classes = [ `libSettings-${this.className}` ];
+		this.UIelement = new OO.ui[ this.widget ]( this.UIconfig );
 		this.UIelement.connect( this, { change: () => {
 			this.validate().then( () => this.change() );
 		} } );

@@ -10,8 +10,8 @@ export default class CheckboxOption extends Option {
 	UI( value ) {
 		this.UIconfig.name = this.name;
 		this.UIconfig.selected = value;
-		this.checkboxInput = new OO.ui.CheckboxInputWidget( this.UIconfig );
-		this.checkboxInput.connect( this, { change: 'change' } );
+		this.UIelement = new OO.ui.CheckboxInputWidget( this.UIconfig );
+		this.UIelement.connect( this, { change: 'change' } );
 		return new OO.ui.FieldLayout( this.checkboxInput, {
 			help: this.help,
 			label: this.label,
@@ -21,6 +21,6 @@ export default class CheckboxOption extends Option {
 	}
 
 	getUIvalue() {
-		return this.checkboxInput.isSelected();
+		return this.UIelement.isSelected();
 	}
 }

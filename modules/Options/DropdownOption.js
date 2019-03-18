@@ -17,9 +17,9 @@ export default class DropdownOption extends Option {
 				return true;
 			}
 		} );
-		this.dropdownInput = new OO.ui.DropdownInputWidget( this.UIconfig );
-		this.dropdownInput.connect( this, { change: 'change' } );
-		return new OO.ui.FieldLayout( this.dropdownInput, {
+		this.UIelement = new OO.ui.DropdownInputWidget( this.UIconfig );
+		this.UIelement.connect( this, { change: 'change' } );
+		return new OO.ui.FieldLayout( this.UIelement, {
 			text: this.label,
 			help: this.help,
 			helpInline: this.helpInline,
@@ -28,6 +28,6 @@ export default class DropdownOption extends Option {
 	}
 
 	getUIvalue() {
-		return this.dropdownInput.getValue();
+		return this.UIelement.getValue();
 	}
 }

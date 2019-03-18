@@ -6,16 +6,11 @@ export default class NumberOption extends TextOption {
 	constructor( config ) {
 		super( config );
 		this.type = 'Number';
-	}
-
-	UI( value ) {
-		super.UIconfigure( value );
-		this.UIconfig.classes = [ 'libSettings-numberInput' ];
-		this.UIelement = new OO.ui.NumberInputWidget( this.UIconfig );
-		return super.UIfurther();
+		this.className = 'numberInput';
+		this.widget = 'NumberInputWidget';
 	}
 
 	getUIvalue() {
-		return Number( this.UIelement.getValue() );
+		return Number( super.getUIvalue() );
 	}
 }
