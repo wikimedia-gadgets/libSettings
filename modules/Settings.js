@@ -30,9 +30,11 @@ export default class Settings extends OO.EventEmitter {
 		this.title = config.title || 'Settings';
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
 		this.saveFailMessage = `Could not save settings for ${this.scriptName}.`;
-		this.saveSettings = ( config.saveSettings !== undefined ) ? config.saveSettings : true;
+		this.saveSettings = ( config.saveSettings === undefined ) || config.saveSettings;
 		this.notifyUponSave = ( config.notifyUponSave !== undefined ) ?
 			config.notifyUponSave : this.saveSettings;
+		this.reloadUponSave = ( config.reloadUponSave !== undefined ) ?
+			config.reloadUponSave : this.saveSettings;
 		this.userOptions = config.userOptions || {};
 		this.runOverOptionsConfig( ( option ) => {
 			if ( option.helpInline === undefined ) {
@@ -110,7 +112,7 @@ export default class Settings extends OO.EventEmitter {
 
 	/** Save settings
 	 * Only saves unique settings, i.e settings that are different from the default
-	 * @returns {Promise}
+	 * @returns {Promise|function}
 	 */
 	save() {
 		this.newUserOptions = {};
@@ -139,43 +141,56 @@ export default class Settings extends OO.EventEmitter {
 	}
 
 	displayMain() {
-		const SettingsDialog = wrapSettingsDialog();
-		SettingsDialog.static.name = 'settingsDialog';
-		SettingsDialog.static.title = this.title;
-		SettingsDialog.static.actions = [
-			{ action: 'save', label: this.saveSettingsLabel, flags: [ 'primary', 'progressive' ] },
-			{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
-			{ action: 'showDefault', label: this.showDefaultsLabel }
-		];
+		if ( !this.windowManager ) {
+			const SettingsDialog = wrapSettingsDialog();
+			SettingsDialog.static.name = 'settingsDialog';
+			SettingsDialog.static.title = this.title;
+			SettingsDialog.static.actions = [
+				{ action: 'save', label: this.saveSettingsLabel, flags: [ 'primary', 'progressive' ] },
+				{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
+				{ action: 'showDefault', label: this.showDefaultsLabel }
+			];
 
-		if ( Object.keys( this.userOptions ).length > 0 ) {
-			SettingsDialog.static.actions.push(
-				{ action: 'showCurrentSettings', label: this.showCurrentSettingsLabel }
-			);
+			if ( Object.keys( this.userOptions ).length > 0 ) {
+				SettingsDialog.static.actions.push(
+					{ action: 'showCurrentSettings', label: this.showCurrentSettingsLabel }
+				);
+			}
+
+			// Make the window.
+			this.settingsDialog = new SettingsDialog( {
+				size: this.size,
+				classes: [ 'settingsDialog' ]
+			}, this );
+
+			// Bindings
+			this.runOverOptionsConfig( ( option ) => {
+				option.connect( this.settingsDialog, {
+					change: 'changeHandler'
+				} );
+			} );
+
+			this.windowManager = new OO.ui.WindowManager();
+
+			document.body.appendChild( this.windowManager.$element[ 0 ] );
+
+			this.windowManager.addWindows( [ this.settingsDialog ] );
+			this.windowManager.on( 'closing', ( win, closed, data ) => {
+				if ( data ) {
+					data.then( () => {
+						if ( this.reloadUponSave ) {
+							window.location.reload();
+						}
+					} );
+				}
+			} );
+		} else {
+			this.settingsDialog.regenUI( 'value' );
 		}
 
-		// Make the window.
-		const settingsDialog = new SettingsDialog( {
-			size: this.size,
-			classes: [ 'settingsDialog' ]
-		}, this );
+		this.windowManager.openWindow( this.settingsDialog );
 
-		// Bindings
-		this.runOverOptionsConfig( ( option ) => {
-			option.connect( settingsDialog, {
-				change: 'changeHandler'
-			} );
-		} );
-
-		// Create and append a window manager
-		const windowManager = new OO.ui.WindowManager();
-
-		document.body.appendChild( windowManager.$element[ 0 ] );
-
-		windowManager.addWindows( [ settingsDialog ] );
-		windowManager.openWindow( settingsDialog );
-
-		return windowManager;
+		return this.windowManager;
 	}
 
 	display() {
