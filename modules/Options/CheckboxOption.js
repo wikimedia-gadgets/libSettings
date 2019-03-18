@@ -12,7 +12,7 @@ export default class CheckboxOption extends Option {
 		this.UIconfig.selected = value;
 		this.UIelement = new OO.ui.CheckboxInputWidget( this.UIconfig );
 		this.UIelement.connect( this, { change: 'change' } );
-		return new OO.ui.FieldLayout( this.checkboxInput, {
+		return new OO.ui.FieldLayout( this.UIelement, {
 			help: this.help,
 			label: this.label,
 			helpInline: this.helpInline,
