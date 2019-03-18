@@ -35,14 +35,17 @@ export default function wrapSettingsDialog() {
 			const onePage = ( this.settings.optionsConfig.length === 1 );
 			let internalUI;
 
-			const pages = this.settings.optionsConfig.map( ( element ) => {
-				return new Page(
-					element.title,
-					{ padded: onePage, scrollabe: false },
-					element,
-					value
-				);
-			} );
+			const pages = this.settings.optionsConfig.reduce( ( result, element ) => {
+				if ( !element.hide ) {
+					result.push( new Page(
+						element.title,
+						{ padded: onePage, scrollabe: false },
+						element,
+						value
+					) );
+				}
+				return result;
+			}, [] );
 
 			if ( !onePage ) {
 				internalUI = new OO.ui.BookletLayout( {
