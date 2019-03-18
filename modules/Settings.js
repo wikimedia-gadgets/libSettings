@@ -25,7 +25,7 @@ export default class Settings extends OO.EventEmitter {
 		super();
 		this.optionsConfig = config.optionsConfig;
 		this.scriptName = config.scriptName;
-		this.optionName = `userjs-${ config.optionName || config.scriptName }`;
+		this.optionName = `userjs-${config.optionName || config.scriptName}`;
 		this.size = config.size;
 		this.title = config.title || 'Settings';
 		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
@@ -161,7 +161,7 @@ export default class Settings extends OO.EventEmitter {
 		}, this );
 
 		// Bindings
-		this.runOverOptionsConfig( ( option ) =>{
+		this.runOverOptionsConfig( ( option ) => {
 			option.connect( settingsDialog, {
 				change: 'changeHandler'
 			} );
@@ -170,7 +170,6 @@ export default class Settings extends OO.EventEmitter {
 		// Create and append a window manager
 		const windowManager = new OO.ui.WindowManager();
 
-		// eslint-disable-next-line jquery/no-global-selector
 		document.body.appendChild( windowManager.$element[ 0 ] );
 
 		windowManager.addWindows( [ settingsDialog ] );
