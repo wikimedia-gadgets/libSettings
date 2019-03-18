@@ -23,13 +23,19 @@ export default class Settings extends OO.EventEmitter {
 		config
 	) {
 		super();
+		mw.messages.set( {
+			'ls-saveMessage': 'Settings for $1 successfully saved.',
+			'ls-saveFailMessage': 'Could not save settings for $1.',
+			'ls-save': 'Save settings',
+			'ls-cancel': 'Cancel',
+			'ls-showDefaults': 'Show defaults',
+			'ls-showCurrentSettings': 'Show current settings'
+		} );
 		this.optionsConfig = config.optionsConfig;
 		this.scriptName = config.scriptName;
 		this.optionName = `userjs-${config.optionName || config.scriptName}`;
 		this.size = config.size;
 		this.title = config.title || 'Settings';
-		this.saveMessage = `Settings for ${this.scriptName} successfully saved.`;
-		this.saveFailMessage = `Could not save settings for ${this.scriptName}.`;
 		this.saveSettings = ( config.saveSettings === undefined ) || config.saveSettings;
 		this.notifyUponSave = ( config.notifyUponSave !== undefined ) ?
 			config.notifyUponSave : this.saveSettings;
@@ -42,11 +48,13 @@ export default class Settings extends OO.EventEmitter {
 			}
 		} );
 		this.height = config.height;
-		this.saveSettingsLabel = config.saveSettingsLabel || 'Save settings';
-		this.cancelLabel = config.cancelLabel || 'Cancel';
-		this.showDefaultsLabel = config.showDefaultsLabel || 'Show defaults';
-		this.showCurrentSettingsLabel = config.showCurrentSettingsLabel || 'Show current settings';
 
+		this.saveSettingsLabel = config.saveSettingsLabel || mw.msg( 'ls-save' );
+		this.cancelLabel = config.cancelLabel || mw.msg( 'ls-cancel' );
+		this.showDefaultsLabel = config.showDefaultsLabel || mw.msg( 'ls-showDefaults' );
+		this.showCurrentSettingsLabel = config.showCurrentSettingsLabel || mw.msg( 'ls-showCurrentSettings' );
+		this.saveMessage = mw.msg( 'ls-saveMessage', this.scriptName );
+		this.saveFailMessage = mw.msg( 'ls-saveFailMessage', this.scriptName );
 	}
 
 	/* Traverse through optionsConfig and run the function over each option
