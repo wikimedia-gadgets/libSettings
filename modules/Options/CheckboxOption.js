@@ -4,7 +4,7 @@ import Option from 'Option.js';
  */
 export default class CheckboxOption extends Option {
 	constructor( config ) {
-		super( config, 'Boolean' );
+		super( config, 'Checkbox' );
 	}
 
 	UI( value ) {
