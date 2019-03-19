@@ -18,11 +18,10 @@ import wrapSettingsDialog from 'SettingsDialog.js';
  *
 */
 
-export default class Settings extends OO.EventEmitter {
+export default class Settings {
 	constructor(
 		config
 	) {
-		super();
 		mw.messages.set( {
 			'ls-saveMessage': 'Settings for $1 successfully saved.',
 			'ls-saveFailMessage': 'Could not save settings for $1.',
