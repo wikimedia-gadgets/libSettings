@@ -192,8 +192,6 @@ export default class Settings extends OO.EventEmitter {
 					} );
 				}
 			} );
-		} else {
-			this.settingsDialog.regenUI( 'value' );
 		}
 
 		this.windowManager.openWindow( this.settingsDialog );

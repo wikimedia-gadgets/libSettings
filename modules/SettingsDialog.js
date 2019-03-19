@@ -64,10 +64,16 @@ export default function wrapSettingsDialog() {
 			return internalUI;
 		}
 
-		initialize() {
-			super.initialize();
-			this.content = this.genInternalUI( 'value' );
-			this.$body.append( this.content.$element );
+		setupUI( value ) {
+			this.content = this.genInternalUI( value );
+			this.$body.html( this.content.$element );
+			this.changeHandler();
+		}
+
+		getSetupProcess() {
+			const process = super.getSetupProcess();
+			process.next( () => this.setupUI( 'value' ) );
+			return process;
 		}
 
 		/** saveStatus is true
@@ -102,18 +108,10 @@ export default function wrapSettingsDialog() {
 			if ( this.content.getCurrentPageName ) {
 				currentPageName = this.content.getCurrentPageName();
 			}
-			this.content = this.genInternalUI( value );
-			this.changeHandler();
+			this.setupUI( value );
 			if ( currentPageName ) {
 				this.content.setPage( currentPageName );
 			}
-			this.$body.html( this.content.$element );
-		}
-
-		getSetupProcess() {
-			const process = super.getSetupProcess();
-			process.next( () => this.changeHandler() );
-			return process;
 		}
 
 		getActionProcess( action ) {
