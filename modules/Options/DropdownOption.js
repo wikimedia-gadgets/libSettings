@@ -4,7 +4,8 @@ import Option from 'Option.js';
  */
 export default class DropdownOption extends Option {
 	constructor( config ) {
-		super( config, 'Dropdown' );
+		super( config );
+		this.type = 'Dropdown';
 		this.values = config.values;
 	}
 
