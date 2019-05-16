@@ -22,6 +22,10 @@ export default class Option extends OO.EventEmitter {
 		this.label = config.label;
 		this.help = config.help;
 		this.validInput = true;
+		if ( this.name === undefined || this.defaultValue === undefined ) {
+			const varName = ( this.name === undefined ) ? 'name' : 'defaultValue';
+			throw Error( `[libSettings] "${varName}" of an Option is required to be defined but is not.` );
+		}
 	}
 
 	get value() {
