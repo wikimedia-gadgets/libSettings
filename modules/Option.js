@@ -18,18 +18,20 @@ export default class Option extends OO.EventEmitter {
 		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
+		this.type = config.type;
 		this.UIconfig = config.UIconfig || {};
 		this.label = config.label;
 		this.help = config.help;
+
+		this.UIconfig.classes = [ `libSettings-${this.type}Option` ];
 		this.validInput = true;
 		if ( this.name === undefined || this.defaultValue === undefined ) {
 			const varName = ( this.name === undefined ) ? 'name' : 'defaultValue';
 			throw Error( `[libSettings] "${varName}" of an Option is required to be defined but is not.` );
 		}
-	}
-
-	initialize() {
-
+		if ( this.type === undefined ) {
+			throw Error( '[libSettings] "config.type" is required to be defined by classes that extend Option.' );
+		}
 	}
 
 	get value() {

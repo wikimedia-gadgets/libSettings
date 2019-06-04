@@ -5,7 +5,7 @@ import DateOption from 'Options/DateOption.js';
 import TextOption from 'Options/TextOption.js';
 import NumberOption from 'Options/NumberOption.js';
 import DropdownOption from 'Options/DropdownOption.js';
-mw.util.addCSS( `.libSettings-numberInput {
+mw.util.addCSS( `.libSettings-NumberOption {
 	max-width: 15em
 }` );
 mw.libs.libSettings = {};

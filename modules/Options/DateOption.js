@@ -5,7 +5,7 @@ import Option from 'Option.js';
  */
 export default class DateOption extends Option {
 	constructor( config ) {
+		config.type = 'Date';
 		super( config );
-		this.type = 'Date';
 	}
 }

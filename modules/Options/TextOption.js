@@ -4,9 +4,8 @@ import Option from 'Option.js';
  */
 export default class TextOption extends Option {
 	constructor( config ) {
+		config.type = config.type || 'Text';
 		super( config );
-		this.type = 'Text';
-		this.className = 'textInput';
 		this.widget = 'TextInputWidget';
 	}
 

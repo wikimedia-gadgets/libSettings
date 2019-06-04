@@ -1,12 +1,11 @@
 import TextOption from 'Options/TextOption.js';
 /**
- * @extends Option
+ * @extends TextOption
  */
 export default class NumberOption extends TextOption {
 	constructor( config ) {
+		config.type = 'Number';
 		super( config );
-		this.type = 'Number';
-		this.className = 'numberInput';
 		this.widget = 'NumberInputWidget';
 	}
 
