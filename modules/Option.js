@@ -28,6 +28,10 @@ export default class Option extends OO.EventEmitter {
 		}
 	}
 
+	initialize() {
+
+	}
+
 	get value() {
 		if ( this.customValue !== undefined ) {
 			return this.customValue;

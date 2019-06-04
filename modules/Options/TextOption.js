@@ -21,7 +21,6 @@ export default class TextOption extends Option {
 	UI( value ) {
 		this.UIconfig.name = this.name;
 		this.UIconfig.value = value;
-		this.UIconfig.classes = [ `libSettings-${this.className}` ];
 		this.UIelement = new OO.ui[ this.widget ]( this.UIconfig );
 		this.UIelement.connect( this, { change: () => {
 			this.validate().then( () => this.change() );
