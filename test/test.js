@@ -5,7 +5,7 @@ const TextOption = mw.libs.libSettings.TextOption;
 
 const replyLink = [
 	{
-		title: 'Reply link',
+		title: 'General',
 		preferences: [
 			{
 				header: 'General',
@@ -52,23 +52,23 @@ const replyLink = [
 						}
 					} )
 				]
-			},
-			{
-				header: 'Testing',
-				options: [
-					new DropdownOption( {
-						name: 'DryRun',
-						label: 'Should the script make no actual edits, but just print results in the console?',
-						help: 'This is useful for testing.',
-						defaultValue: 'never',
-						values: [
-							{ data: 'always', label: 'Always' },
-							{ data: 'checkbox', label: 'Checkbox' },
-							{ data: 'never', label: 'Never' }
-						]
-					} )
-				]
 			}
+		]
+	},
+	{
+		title: 'Testing',
+		preferences: [
+			new DropdownOption( {
+				name: 'DryRun',
+				label: 'Should the script make no actual edits, but just print results in the console?',
+				help: 'This is useful for testing.',
+				defaultValue: 'never',
+				values: [
+					{ data: 'always', label: 'Always' },
+					{ data: 'checkbox', label: 'Checkbox' },
+					{ data: 'never', label: 'Never' }
+				]
+			} )
 		]
 	}
 ];
@@ -77,6 +77,8 @@ const settings = new mw.libs.libSettings.Settings( {
 	title: 'Settings for reply-link',
 	scriptName: 'test',
 	size: 'large',
+	height: 'auto',
+	helpInline: true,
 	optionsConfig: replyLink
 } );
 
