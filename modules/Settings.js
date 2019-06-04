@@ -23,6 +23,7 @@ export default class Settings {
 		config
 	) {
 		mw.messages.set( {
+			'ls-settingsTitle': 'Settings',
 			'ls-saveMessage': 'Settings for $1 successfully saved.',
 			'ls-saveFailMessage': 'Could not save settings for $1.',
 			'ls-save': 'Save settings',
@@ -34,7 +35,7 @@ export default class Settings {
 		this.scriptName = config.scriptName;
 		this.optionName = `userjs-${config.optionName || config.scriptName}`;
 		this.size = config.size;
-		this.title = config.title || 'Settings';
+		this.title = config.title || mw.msg( 'ls-settingsTitle' );
 		this.saveSettings = ( config.saveSettings === undefined ) || config.saveSettings;
 		this.notifyUponSave = ( config.notifyUponSave !== undefined ) ?
 			config.notifyUponSave : this.saveSettings;
