@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"author": "Galobtter"
+	},
+	"libSettings-settings-title": "Settings",
+	"libSettings-save-label": "Save settings",
+	"libSettings-cancel-label": "Cancel",
+	"libSettings-showDefaults-label": "Show defaults",
+	"libSettings-showCurrentSettings-label": "Show current settings",
+	"libSettings-save-success-message": "Settings for $1 successfully saved.",
+	"libSettings-save-fail-message": "Could not save settings for $1."
+}

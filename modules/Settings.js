@@ -1,4 +1,5 @@
 import wrapSettingsDialog from 'SettingsDialog.js';
+const messages = require( '../i18n/en.json' );
 
 /**
  * @param {Object} settingsConfig
@@ -23,15 +24,7 @@ export default class Settings {
 	constructor(
 		config
 	) {
-		mw.messages.set( {
-			'libSettings-settings-title': 'Settings',
-			'libSettings-save-label': 'Save settings',
-			'libSettings-cancel-label': 'Cancel',
-			'libSettings-showDefaults-label': 'Show defaults',
-			'libSettings-showCurrentSettings-label': 'Show current settings',
-			'libSettings-save-success-message': 'Settings for $1 successfully saved.',
-			'libSettings-save-fail-message': 'Could not save settings for $1.'
-		} );
+		mw.messages.set( messages );
 		this.optionsConfig = config.optionsConfig;
 		this.scriptName = config.scriptName;
 		this.optionName = `userjs-${config.optionName || config.scriptName}`;
