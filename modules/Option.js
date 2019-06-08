@@ -5,9 +5,7 @@
  * @property {*} config.defaultValue (required)
  * @property {string} config.label Text displayed in settings. (required)
  * @property {string} config.helptip Help text shown in settings.
- * @property {Array} config.possibleValues Either [ <value>, .. ] or
- *  [ [ <InternalValue>, <ValueDisplayedInSettings> ], .. ].
- *  Value is validated against possibleValues.
+ * @property {(boolean|function)} config.hide
  * @param {string} type Type of option. Should be same as name of extending class minus
  *  Option at the end (e.g "Color" for "ColorOption" class)
  * @param {...string} basetypes Type(s) to validate against (Defined by extending classes).
@@ -22,6 +20,7 @@ export default class Option extends OO.EventEmitter {
 		this.UIconfig = config.UIconfig || {};
 		this.label = config.label;
 		this.help = config.help;
+		this.hide = config.hide;
 
 		this.UIconfig.classes = [ `libSettings-${this.type}Option` ];
 		this.validInput = true;
@@ -56,7 +55,9 @@ export default class Option extends OO.EventEmitter {
 	}
 
 	buildUI( value ) {
-		return this.UI( this[ value ] );
+		if ( !this.hide ) {
+			return this.UI( this[ value ] );
+		}
 	}
 
 	getUIvalue() {
@@ -68,7 +69,12 @@ export default class Option extends OO.EventEmitter {
 	 * @return {*} value
 	 */
 	getCustomUIValue() {
-		const UIValue = this.getUIvalue();
+		let UIValue;
+		if ( this.UIelement ) {
+			UIValue = this.getUIvalue();
+		} else {
+			UIValue = this.value;
+		}
 		if ( UIValue !== this.defaultValue ) {
 			return UIValue;
 		}

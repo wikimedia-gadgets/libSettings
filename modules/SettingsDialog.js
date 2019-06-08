@@ -1,16 +1,21 @@
 export default function wrapSettingsDialog() {
 	class Page extends OO.ui.PageLayout {
-		constructor( name, config, element, value ) {
+		constructor( name, config, element, value, hideHandle ) {
 			super( name, config );
 			this.element = element;
 			this.element.preferences.forEach( ( element2 ) => {
+				/* Don't display element2 if element2.hide */
+				if ( hideHandle( element2 ) ) {
+					return;
+				}
 				if ( element2.header ) {
 					element2.UIconfig = element2.UIconfig || {};
 					element2.UIconfig.label = element2.header;
 					const fieldset = new OO.ui.FieldsetLayout( element2.UIconfig );
-					const fieldLayouts = element2.options.map(
-						( option ) => option.buildUI( value )
+					let fieldLayouts = element2.options.map(
+						option => option.buildUI( value )
 					);
+					fieldLayouts = fieldLayouts.filter( element => element );
 					fieldset.addItems( fieldLayouts );
 					this.$element.append( fieldset.$element );
 				} else {
@@ -31,10 +36,20 @@ export default function wrapSettingsDialog() {
 			this.settings = self;
 		}
 
+		/* Handle element.hide as bool and function */
+		hideHandle( element ) {
+			switch ( typeof element.hide ) {
+				case 'boolean':
+					return element.hide;
+				case 'function':
+					return element.hide();
+			}
+		}
+
 		genInternalUI( value ) {
 			// ignore elements that have hide set to true
 			const realOptionsConfig = this.settings.optionsConfig.filter(
-				element => !element.hide
+				element => !this.hideHandle( element )
 			);
 			const onePage = realOptionsConfig.length === 1;
 
@@ -45,7 +60,8 @@ export default function wrapSettingsDialog() {
 					element.title,
 					{ padded: onePage, scrollabe: false },
 					element,
-					value
+					value,
+					this.hideHandle
 				);
 			} );
 
@@ -85,6 +101,10 @@ export default function wrapSettingsDialog() {
 			let userChanged = false;
 			let showDefaultStatus = false;
 			this.settings.runOverOptionsConfig( ( option ) => {
+				/* Skip options where UI hasn't been created */
+				if ( !option.UIelement ) {
+					return;
+				}
 				if ( !option.validInput ) {
 					validInput = false;
 				}

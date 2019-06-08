@@ -7,14 +7,15 @@ import wrapSettingsDialog from 'SettingsDialog.js';
  * the options are stored using API:Options.( "userjs-" is prepended to this ).
  * @property {string} settingsConfig.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
  * @property {number} settingsConfig.title
- *
  * @property {Array.<Object>} config.optionsConfig
  * @property {string} config.optionsConfig[].title Header of particular set of preferences
- * @property {string} config.optionsConfig[].level Indentation level, see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/OO.ui.OutlineOptionWidget
- * @property {(boolean)} [config.optionsConfig[].hide] Boolean ( NOT IMPLEMENTED:
+ * @property {string} config.optionsConfig[].level Indentation level,
+ * see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/OO.ui.OutlineOptionWidget
+ * @property {(boolean|function)} config.optionsConfig[].hide Boolean
  * or function that returns a Boolean.
- * Can use function when a variable is only loaded after the settings is loaded. )
+ * Can use function when a variable is only loaded after the settings is loaded.
  * @property {...libSettings.Option} config.optionsConfig[].preferences Array of Option objects.
+ * @property {(boolean|function)} config.optionsConfig[].preferences[].hide
  *
 */
 
