@@ -23,19 +23,19 @@ export default class Settings {
 		config
 	) {
 		mw.messages.set( {
-			'ls-settingsTitle': 'Settings',
-			'ls-saveMessage': 'Settings for $1 successfully saved.',
-			'ls-saveFailMessage': 'Could not save settings for $1.',
-			'ls-save': 'Save settings',
-			'ls-cancel': 'Cancel',
-			'ls-showDefaults': 'Show defaults',
-			'ls-showCurrentSettings': 'Show current settings'
+			'libSettings-settings-title': 'Settings',
+			'libSettings-save-label': 'Save settings',
+			'libSettings-cancel-label': 'Cancel',
+			'libSettings-showDefaults-label': 'Show defaults',
+			'libSettings-showCurrentSettings-label': 'Show current settings',
+			'libSettings-save-success-message': 'Settings for $1 successfully saved.',
+			'libSettings-save-fail-message': 'Could not save settings for $1.'
 		} );
 		this.optionsConfig = config.optionsConfig;
 		this.scriptName = config.scriptName;
 		this.optionName = `userjs-${config.optionName || config.scriptName}`;
 		this.size = config.size;
-		this.title = config.title || mw.msg( 'ls-settingsTitle' );
+		this.title = config.title || mw.msg( 'libSettings-settings-title' );
 		this.saveSettings = ( config.saveSettings === undefined ) || config.saveSettings;
 		this.notifyUponSave = ( config.notifyUponSave !== undefined ) ?
 			config.notifyUponSave : this.saveSettings;
@@ -49,12 +49,12 @@ export default class Settings {
 		} );
 		this.height = config.height;
 
-		this.saveSettingsLabel = config.saveSettingsLabel || mw.msg( 'ls-save' );
-		this.cancelLabel = config.cancelLabel || mw.msg( 'ls-cancel' );
-		this.showDefaultsLabel = config.showDefaultsLabel || mw.msg( 'ls-showDefaults' );
-		this.showCurrentSettingsLabel = config.showCurrentSettingsLabel || mw.msg( 'ls-showCurrentSettings' );
-		this.saveMessage = mw.msg( 'ls-saveMessage', this.scriptName );
-		this.saveFailMessage = mw.msg( 'ls-saveFailMessage', this.scriptName );
+		this.saveSettingsLabel = config.saveSettingsLabel || mw.msg( 'libSettings-save-label' );
+		this.cancelLabel = config.cancelLabel || mw.msg( 'libSettings-cancel-label' );
+		this.showDefaultsLabel = config.showDefaultsLabel || mw.msg( 'libSettings-showDefaults-label' );
+		this.showCurrentSettingsLabel = config.showCurrentSettingsLabel || mw.msg( 'libSettings-showCurrentSettings-label' );
+		this.saveMessage = mw.msg( 'libSettings-save-success-message', this.scriptName );
+		this.saveFailMessage = mw.msg( 'libSettings-save-fail-message', this.scriptName );
 	}
 
 	/* Traverse through optionsConfig and run the function over each option
