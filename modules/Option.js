@@ -11,8 +11,9 @@
  * @param {...string} basetypes Type(s) to validate against (Defined by extending classes).
 */
 
-export default class Option {
+export default class Option extends OO.EventEmitter {
 	constructor( config ) {
+		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
 		this.type = config.type;
@@ -23,6 +24,7 @@ export default class Option {
 
 		this.UIconfig.classes = [ `libSettings-${this.type}Option` ];
 		this.validInput = true;
+		this.propertyNameUI = 'value';
 
 		if ( this.name === undefined || this.defaultValue === undefined ) {
 			const varName = ( this.name === undefined ) ? 'name' : 'defaultValue';

@@ -1,11 +1,20 @@
 export default function wrapSettingsDialog() {
 	class SettingsDialog extends OO.ui.ProcessDialog {
-		constructor( config, optionsConfig, save, height ) {
+		constructor( config, optionsConfig, height ) {
 			super( config );
 			this.optionsConfig = optionsConfig;
-			this.save = save;
 			this.height = height;
-			this.propertyName = 'value';
+		}
+
+		get propertyNameUI() {
+			return this.propertyName;
+		}
+
+		set propertyNameUI( newPropertyNameUI ) {
+			this.propertyName = newPropertyNameUI;
+			this.optionsConfig.traverse( ( option ) => {
+				option.propertyNameUI = newPropertyNameUI;
+			} );
 		}
 
 		genInternalUI() {
@@ -79,9 +88,6 @@ export default function wrapSettingsDialog() {
 		}
 
 		regenUI() {
-			this.optionsConfig.traverse( ( option ) => {
-				option.propertyNameUI = this.propertyNameUI;
-			} );
 			let currentPageName;
 			if ( this.content.getCurrentPageName ) {
 				currentPageName = this.content.getCurrentPageName();
@@ -95,9 +101,8 @@ export default function wrapSettingsDialog() {
 		getActionProcess( action ) {
 			if ( action === 'save' ) {
 				return new OO.ui.Process( () => {
-					const promise = this.save();
+					this.emit( 'startSave' );
 					this.pushPending();
-					this.close( promise );
 				} );
 			}
 
@@ -120,10 +125,7 @@ export default function wrapSettingsDialog() {
 
 		getHoldProcess( data ) {
 			const process = super.getHoldProcess( data );
-			if ( data ) {
-				process.next( data );
-				process.next( () => this.popPending() );
-			}
+			process.next( () => this.popPending() );
 			return process;
 		}
 

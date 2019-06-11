@@ -28,7 +28,7 @@ export default class Page {
 			if ( ignoreHidden && element.hide ) {
 				return;
 			}
-			if ( 'traverse' in element.prototype ) {
+			if ( 'traverse' in Object.getPrototypeOf( element ) ) {
 				element.traverse( option => func( option ), ignoreHidden );
 			} else {
 				func( element );

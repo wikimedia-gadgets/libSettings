@@ -12,7 +12,7 @@ export default class OptionsConfig {
 	 	 * this.options is an implementation detail of traverse, and retrieveProperty
 	 	 * and should not be depended on (only access optionsConfig through functions).
 		 */
-		this.options = this.depthTraverse();
+		this.options = this.depthCopyTraverse();
 	}
 
 	/**
@@ -58,6 +58,8 @@ export default class OptionsConfig {
 
 	/**
 	 * Retrieve a property from every option.
+	 * For example, you can retrieve the default value of every option
+	 * using retrieveProperty( 'defaultValue' ).
 	 * @param {string} propertyName
 	 * @returns {Object} {option.name: option.propertyName,...}
 	 */
@@ -83,26 +85,5 @@ export default class OptionsConfig {
 				option[ propertyName ] = newPropertyValue;
 			}
 		}
-	}
-
-	/**
-	 * @returns {Object} {option.name: option.defaultValue,...}
-	 */
-	retrieveDefaults() {
-		return this.retrieveProperty( 'defaultValue' );
-	}
-
-	/** Retrieve each option's value as an object.
-	 * @return {Object}
-	 */
-	retrieveValues() {
-		return this.retrieveProperty( 'value' );
-	}
-
-	/** Update value.
-	 * @param {Object} optionNewValues {optionName1: newValue1...}
-	 */
-	updateValues( optionNewValues ) {
-		this.updateProperty( 'value', optionNewValues );
 	}
 }

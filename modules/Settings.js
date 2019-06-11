@@ -11,10 +11,11 @@ const messages = require( '../i18n/en.json' );
  *
 */
 
-export default class Settings {
+export default class Settings extends OO.EventEmitter {
 	constructor(
 		config
 	) {
+		super();
 		mw.messages.set( messages );
 		this.optionsConfig = config.optionsConfig;
 		this.scriptName = config.scriptName;
@@ -58,20 +59,10 @@ export default class Settings {
 			if ( this.saveSettings ) {
 				this.load();
 			}
-			this.optionsConfig.updateValues( this.userOptions );
-			this.options = this.optionsConfig.retrieveValues();
+			this.optionsConfig.updateProperty( 'value', this.userOptions );
+			this.options = this.optionsConfig.retrieveProperty( 'value' );
 		}
 		return this.options;
-	}
-
-	notifySave( status ) {
-		if ( this.notifyUponSave ) {
-			if ( status ) {
-				mw.notify( this.saveMessage );
-			} else {
-				mw.notify( this.saveFailMessage );
-			}
-		}
 	}
 
 	/** Save settings
@@ -79,7 +70,21 @@ export default class Settings {
 	 * @returns {Promise|function}
 	 */
 	save() {
-		this.newUserOptions = this.optionsConfig.retrieveProperty( 'customUIvalue' );
+		const emit = () => {
+			this.emit( 'endSave' );
+		};
+
+		const notifySave = ( status ) => {
+			if ( this.notifyUponSave ) {
+				if ( status ) {
+					mw.notify( this.saveMessage );
+				} else {
+					mw.notify( this.saveFailMessage );
+				}
+			}
+		};
+
+		this.newUserOptions = this.optionsConfig.retrieveProperty( 'customUIValue' );
 		if ( this.saveSettings ) {
 			return mw.loader.using( 'mediawiki.api' ).then( () => {
 				this.API = new mw.Api( {
@@ -92,11 +97,17 @@ export default class Settings {
 				return this.API.saveOption(
 					this.optionName,
 					JSON.stringify( this.newUserOptions )
-				).then( () => this.notifySave( true ), () => this.notifySave( false ) );
+				).then(
+					() => notifySave( true ),
+					() => notifySave( false )
+				).always(
+					() => emit()
+				);
 			} );
 		} else {
-			this.notifySave( true );
-			return () => this.newUserOptions;
+			notifySave( true );
+			emit();
+			return this.newUserOptions;
 		}
 	}
 
@@ -125,11 +136,16 @@ export default class Settings {
 					classes: [ 'libSettings-SettingsDialog' ]
 				},
 				this.optionsConfig,
-				this.save,
 				this.height
 			);
 
 			// Bindings
+			this.settingsDialog.connect( this, {
+				startSave: 'save'
+			} );
+			this.connect( this.settingsDialog, {
+				endSave: 'close'
+			} );
 			this.optionsConfig.traverse( ( option ) => {
 				option.connect( this.settingsDialog, {
 					change: 'changeHandler'
@@ -141,13 +157,9 @@ export default class Settings {
 			document.body.appendChild( this.windowManager.$element[ 0 ] );
 
 			this.windowManager.addWindows( [ this.settingsDialog ] );
-			this.windowManager.on( 'closing', ( win, closed, data ) => {
-				if ( data ) {
-					data.then( () => {
-						if ( this.reloadUponSave ) {
-							window.location.reload();
-						}
-					} );
+			this.windowManager.on( 'closing', () => {
+				if ( this.reloadUponSave ) {
+					window.location.reload();
 				}
 			} );
 		}
@@ -159,6 +171,7 @@ export default class Settings {
 
 	display() {
 		this.get();
+		// oojs-ui-widgets is needed for BookletLayout
 		return mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then( () => {
 			return this.displayMain();
 		} );
