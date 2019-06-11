@@ -36,7 +36,7 @@ export default class Settings {
 		this.reloadUponSave = ( config.reloadUponSave !== undefined ) ?
 			config.reloadUponSave : this.saveSettings;
 		this.userOptions = config.userOptions || {};
-		this.runOverOptionsConfig( ( option ) => {
+		this.optionsConfig.iterate( ( option ) => {
 			if ( option.helpInline === undefined ) {
 				option.helpInline = config.helpInline;
 			}
@@ -51,41 +51,13 @@ export default class Settings {
 		this.saveFailMessage = mw.msg( 'libSettings-save-fail-message', this.scriptName );
 	}
 
-	/* Traverse through optionsConfig and run the function over each option
-	 * @function
-	 * @return {Object} */
-	runOverOptionsConfig( func ) {
-		this.optionsConfig.forEach( ( element ) => {
-			element.preferences.forEach( ( element2 ) => {
-				if ( element2.header ) {
-					element2.options.forEach( option => func( option ) );
-				} else {
-					func( element2 );
-				}
-			} );
-		} );
-	}
-
+	/**
+	 * @func
+	 * @private
+	 */
 	load() {
 		this.optionsText = mw.user.options.get( this.optionName );
 		this.userOptions = JSON.parse( this.optionsText ) || {};
-	}
-
-	transfer() {
-		// transfer userOptions to optionsConfig
-		this.runOverOptionsConfig( ( option ) => {
-			const userOption = this.userOptions[ option.name ];
-			if ( userOption !== undefined ) {
-				option.customValue = userOption;
-			}
-		} );
-
-		// Then retrieve it, along with default Option as necessary
-		this.options = {};
-		this.runOverOptionsConfig( ( option ) => {
-			this.options[ option.name ] = option.value;
-		} );
-		return this.options;
 	}
 
 	/** Get settings
@@ -97,7 +69,8 @@ export default class Settings {
 			if ( this.saveSettings ) {
 				this.load();
 			}
-			this.transfer();
+			this.optionsConfig.updateCustomValue( this.userOptions );
+			this.options = this.optionsConfig.retrieveValues();
 		}
 		return this.options;
 	}
@@ -153,6 +126,7 @@ export default class Settings {
 				{ action: 'showDefault', label: this.showDefaultsLabel }
 			];
 
+			// If userOptions is specified, then can have a button to show current settings.
 			if ( Object.keys( this.userOptions ).length > 0 ) {
 				SettingsDialog.static.actions.push(
 					{ action: 'showCurrentSettings', label: this.showCurrentSettingsLabel }
@@ -166,7 +140,7 @@ export default class Settings {
 			}, this );
 
 			// Bindings
-			this.runOverOptionsConfig( ( option ) => {
+			this.optionsConfig.iterate( ( option ) => {
 				option.connect( this.settingsDialog, {
 					change: 'changeHandler'
 				} );

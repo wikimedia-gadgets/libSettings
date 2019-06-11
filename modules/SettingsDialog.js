@@ -48,7 +48,7 @@ export default function wrapSettingsDialog() {
 
 		genInternalUI( value ) {
 			// ignore elements that have hide set to true
-			const realOptionsConfig = this.settings.optionsConfig.filter(
+			const realOptionsConfig = this.optionsConfig.filter(
 				element => !this.hideHandle( element )
 			);
 			const onePage = realOptionsConfig.length === 1;
@@ -100,7 +100,7 @@ export default function wrapSettingsDialog() {
 			let validInput = true;
 			let userChanged = false;
 			let showDefaultStatus = false;
-			this.settings.runOverOptionsConfig( ( option ) => {
+			this.optionsConfig.iterate( ( option ) => {
 				/* Skip options where UI hasn't been created */
 				if ( !option.UIelement ) {
 					return;
