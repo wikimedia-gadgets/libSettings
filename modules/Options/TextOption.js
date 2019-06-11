@@ -33,7 +33,7 @@ export default class TextOption extends Option {
 		} );
 	}
 
-	getUIvalue() {
+	get UIvalue() {
 		return this.UIelement.getValue();
 	}
 }

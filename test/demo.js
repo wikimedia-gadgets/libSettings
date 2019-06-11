@@ -1,11 +1,11 @@
 import '../modules/index.js';
 const ls = mw.libs.libSettings;
 
-const replyLink = new ls.OptionsConfig(
-	{
+const replyLink = new ls.OptionsConfig( [
+	new ls.Page( {
 		title: 'General',
 		preferences: [
-			{
+			new ls.Group( {
 				header: 'General',
 				options: [
 					new ls.CheckboxOption( {
@@ -26,8 +26,8 @@ const replyLink = new ls.OptionsConfig(
 						defaultValue: ''
 					} )
 				]
-			},
-			{
+			} ),
+			new ls.Group( {
 				header: 'Pings',
 				options: [
 					new ls.DropdownOption( {
@@ -50,10 +50,10 @@ const replyLink = new ls.OptionsConfig(
 						}
 					} )
 				]
-			}
+			} )
 		]
-	},
-	{
+	} ),
+	new ls.Page( {
 		title: 'Testing',
 		preferences: [
 			new ls.DropdownOption( {
@@ -68,8 +68,8 @@ const replyLink = new ls.OptionsConfig(
 				]
 			} )
 		]
-	}
-);
+	} )
+] );
 
 const settings = new ls.Settings( {
 	title: 'Settings for reply-link',

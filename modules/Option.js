@@ -11,9 +11,8 @@
  * @param {...string} basetypes Type(s) to validate against (Defined by extending classes).
 */
 
-export default class Option extends OO.EventEmitter {
+export default class Option {
 	constructor( config ) {
-		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
 		this.type = config.type;
@@ -24,6 +23,7 @@ export default class Option extends OO.EventEmitter {
 
 		this.UIconfig.classes = [ `libSettings-${this.type}Option` ];
 		this.validInput = true;
+
 		if ( this.name === undefined || this.defaultValue === undefined ) {
 			const varName = ( this.name === undefined ) ? 'name' : 'defaultValue';
 			throw Error( `[libSettings] "${varName}" of an Option is required to be defined but is not.` );
@@ -41,42 +41,49 @@ export default class Option extends OO.EventEmitter {
 		}
 	}
 
-	change() {
-		this.emit( 'change' );
-	}
-
-	/**
-	 * CreateUI.
-	 * @param {any} value
-	 * @return {OO.ui.element}
-	 */
-	UI() {
-		return mw.log.error( `UI not defined by extending class ${this.type}Option.` );
-	}
-
-	buildUI( value ) {
-		if ( !this.hide ) {
-			return this.UI( this[ value ] );
-		}
-	}
-
-	getUIvalue() {
-		return mw.log.error( `getUIvalue not defined by extending class ${this.type}Option.` );
+	set value( newValue ) {
+		this.customValue = newValue;
 	}
 
 	/**
 	 * Return only custom values of option from UI. (called when saving settings. )
 	 * @return {*} value
 	 */
-	getCustomUIValue() {
+	get customUIValue() {
 		let UIValue;
-		if ( this.UIelement ) {
-			UIValue = this.getUIvalue();
+		if ( this.hasUI ) {
+			UIValue = this.UIvalue;
 		} else {
 			UIValue = this.value;
 		}
 		if ( UIValue !== this.defaultValue ) {
 			return UIValue;
+		} else {
+			return undefined;
 		}
+	}
+
+	change() {
+		this.emit( 'change' );
+	}
+
+	buildUI( value ) {
+		if ( !this.hide ) {
+			this.hasUI = true;
+			return this.UI( this[ value ] );
+		}
+	}
+
+	get UIvalue() {
+		return mw.log.error( `Getter UIvalue not defined by extending class ${this.type}Option.` );
+	}
+
+	/**
+	 * Create UI.
+	 * @param {any} value
+	 * @return {OO.ui.element}
+	 */
+	UI() {
+		return mw.log.error( `Function UI not defined by extending class ${this.type}Option.` );
 	}
 }

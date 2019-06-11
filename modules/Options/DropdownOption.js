@@ -28,7 +28,7 @@ export default class DropdownOption extends Option {
 		} );
 	}
 
-	getUIvalue() {
+	get UIvalue() {
 		return this.UIelement.getValue();
 	}
 }

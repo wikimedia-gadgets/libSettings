@@ -1,5 +1,5 @@
 export default function wrapSettingsDialog() {
-	class Page extends OO.ui.PageLayout {
+	class PageUI extends OO.ui.PageLayout {
 		constructor( name, config, element, value, hideHandle ) {
 			super( name, config );
 			this.element = element;
@@ -36,16 +36,6 @@ export default function wrapSettingsDialog() {
 			this.settings = self;
 		}
 
-		/* Handle element.hide as bool and function */
-		hideHandle( element ) {
-			switch ( typeof element.hide ) {
-				case 'boolean':
-					return element.hide;
-				case 'function':
-					return element.hide();
-			}
-		}
-
 		genInternalUI( value ) {
 			// ignore elements that have hide set to true
 			const realOptionsConfig = this.optionsConfig.filter(
@@ -56,9 +46,12 @@ export default function wrapSettingsDialog() {
 			let internalUI;
 
 			const pages = realOptionsConfig.map( element => {
-				return new Page(
+				return new PageUI(
 					element.title,
-					{ padded: onePage, scrollabe: false },
+					{
+						padded: onePage,
+						scrollabe: false
+					},
 					element,
 					value,
 					this.hideHandle
@@ -100,15 +93,15 @@ export default function wrapSettingsDialog() {
 			let validInput = true;
 			let userChanged = false;
 			let showDefaultStatus = false;
-			this.optionsConfig.iterate( ( option ) => {
+			this.optionsConfig.traverse( ( option ) => {
 				/* Skip options where UI hasn't been created */
-				if ( !option.UIelement ) {
+				if ( !option.hasUI ) {
 					return;
 				}
 				if ( !option.validInput ) {
 					validInput = false;
 				}
-				const UIvalue = option.getUIvalue();
+				const UIvalue = option.UIvalue;
 				if ( UIvalue !== option.value ) {
 					userChanged = true;
 				}

@@ -9,7 +9,7 @@ export default class NumberOption extends TextOption {
 		this.widget = 'NumberInputWidget';
 	}
 
-	getUIvalue() {
-		return Number( super.getUIvalue() );
+	get UIvalue() {
+		return Number( super.UIvalue );
 	}
 }

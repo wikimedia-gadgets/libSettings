@@ -21,7 +21,7 @@ export default class CheckboxOption extends Option {
 		} );
 	}
 
-	getUIvalue() {
+	get UIvalue() {
 		return this.UIelement.isSelected();
 	}
 }

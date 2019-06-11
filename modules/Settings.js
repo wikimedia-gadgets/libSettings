@@ -8,15 +8,6 @@ const messages = require( '../i18n/en.json' );
  * the options are stored using API:Options.( "userjs-" is prepended to this ).
  * @property {string} settingsConfig.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
  * @property {number} settingsConfig.title
- * @property {Array.<Object>} config.optionsConfig
- * @property {string} config.optionsConfig[].title Header of particular set of preferences
- * @property {string} config.optionsConfig[].level Indentation level,
- * see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/OO.ui.OutlineOptionWidget
- * @property {(boolean|function)} config.optionsConfig[].hide Boolean
- * or function that returns a Boolean.
- * Can use function when a variable is only loaded after the settings is loaded.
- * @property {...libSettings.Option} config.optionsConfig[].preferences Array of Option objects.
- * @property {(boolean|function)} config.optionsConfig[].preferences[].hide
  *
 */
 
@@ -36,7 +27,7 @@ export default class Settings {
 		this.reloadUponSave = ( config.reloadUponSave !== undefined ) ?
 			config.reloadUponSave : this.saveSettings;
 		this.userOptions = config.userOptions || {};
-		this.optionsConfig.iterate( ( option ) => {
+		this.optionsConfig.traverse( ( option ) => {
 			if ( option.helpInline === undefined ) {
 				option.helpInline = config.helpInline;
 			}
@@ -52,8 +43,6 @@ export default class Settings {
 	}
 
 	/**
-	 * @func
-	 * @private
 	 */
 	load() {
 		this.optionsText = mw.user.options.get( this.optionName );
@@ -69,7 +58,7 @@ export default class Settings {
 			if ( this.saveSettings ) {
 				this.load();
 			}
-			this.optionsConfig.updateCustomValue( this.userOptions );
+			this.optionsConfig.updateValues( this.userOptions );
 			this.options = this.optionsConfig.retrieveValues();
 		}
 		return this.options;
@@ -90,11 +79,7 @@ export default class Settings {
 	 * @returns {Promise|function}
 	 */
 	save() {
-		this.newUserOptions = {};
-		this.runOverOptionsConfig( ( option ) => {
-			this.newUserOptions[ option.name ] = option.getCustomUIValue();
-		} );
-
+		this.newUserOptions = this.optionsConfig.retrieveProperty( 'customUIvalue' );
 		if ( this.saveSettings ) {
 			return mw.loader.using( 'mediawiki.api' ).then( () => {
 				this.API = new mw.Api( {
@@ -137,10 +122,10 @@ export default class Settings {
 			this.settingsDialog = new SettingsDialog( {
 				size: this.size,
 				classes: [ 'settingsDialog' ]
-			}, this );
+			}, this.optionsConfig );
 
 			// Bindings
-			this.optionsConfig.iterate( ( option ) => {
+			this.optionsConfig.traverse( ( option ) => {
 				option.connect( this.settingsDialog, {
 					change: 'changeHandler'
 				} );
