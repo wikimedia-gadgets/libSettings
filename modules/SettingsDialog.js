@@ -1,64 +1,28 @@
 export default function wrapSettingsDialog() {
-	class PageUI extends OO.ui.PageLayout {
-		constructor( name, config, element, value, hideHandle ) {
-			super( name, config );
-			this.element = element;
-			this.element.preferences.forEach( ( element2 ) => {
-				/* Don't display element2 if element2.hide */
-				if ( hideHandle( element2 ) ) {
-					return;
-				}
-				if ( element2.header ) {
-					element2.UIconfig = element2.UIconfig || {};
-					element2.UIconfig.label = element2.header;
-					const fieldset = new OO.ui.FieldsetLayout( element2.UIconfig );
-					let fieldLayouts = element2.options.map(
-						option => option.buildUI( value )
-					);
-					fieldLayouts = fieldLayouts.filter( element => element );
-					fieldset.addItems( fieldLayouts );
-					this.$element.append( fieldset.$element );
-				} else {
-					this.$element.append( element2.buildUI( value ).$element );
-				}
-			} );
-		}
-
-		setupOutlineItem() {
-			this.outlineItem.setLabel( this.element.title );
-			this.outlineItem.setLevel( this.element.level );
-		}
-	}
-
 	class SettingsDialog extends OO.ui.ProcessDialog {
-		constructor( config, self ) {
+		constructor( config, optionsConfig, save, height ) {
 			super( config );
-			this.settings = self;
+			this.optionsConfig = optionsConfig;
+			this.save = save;
+			this.height = height;
+			this.propertyName = 'value';
 		}
 
-		genInternalUI( value ) {
-			// ignore elements that have hide set to true
-			const realOptionsConfig = this.optionsConfig.filter(
-				element => !this.hideHandle( element )
+		genInternalUI() {
+			const config = this.optionsConfig.getConfig();
+			/* Necessary to determine singlePage here
+			 * as a single page layout needs padding. */
+			const singlePage = config.filter(
+				page => !page.hide
+			).length === 1;
+			const pages = config.map(
+				page => page.buildUI( singlePage )
 			);
-			const onePage = realOptionsConfig.length === 1;
+			pages.filter( element => element );
 
 			let internalUI;
 
-			const pages = realOptionsConfig.map( element => {
-				return new PageUI(
-					element.title,
-					{
-						padded: onePage,
-						scrollabe: false
-					},
-					element,
-					value,
-					this.hideHandle
-				);
-			} );
-
-			if ( !onePage ) {
+			if ( !singlePage ) {
 				internalUI = new OO.ui.BookletLayout( {
 					outlined: true
 				} );
@@ -68,20 +32,18 @@ export default function wrapSettingsDialog() {
 				internalUI = pages[ 0 ];
 			}
 
-			this.outerHeight = pages[ 0 ].$element.outerHeight( true );
-
 			return internalUI;
 		}
 
-		setupUI( value ) {
-			this.content = this.genInternalUI( value );
+		setupUI() {
+			this.content = this.genInternalUI();
 			this.$body.html( this.content.$element );
 			this.changeHandler();
 		}
 
 		getSetupProcess() {
 			const process = super.getSetupProcess();
-			process.next( () => this.setupUI( 'value' ) );
+			process.next( () => this.setupUI() );
 			return process;
 		}
 
@@ -116,12 +78,15 @@ export default function wrapSettingsDialog() {
 			} );
 		}
 
-		regenUI( value ) {
+		regenUI() {
+			this.optionsConfig.traverse( ( option ) => {
+				option.propertyNameUI = this.propertyNameUI;
+			} );
 			let currentPageName;
 			if ( this.content.getCurrentPageName ) {
 				currentPageName = this.content.getCurrentPageName();
 			}
-			this.setupUI( value );
+			this.setupUI();
 			if ( currentPageName ) {
 				this.content.setPage( currentPageName );
 			}
@@ -130,7 +95,7 @@ export default function wrapSettingsDialog() {
 		getActionProcess( action ) {
 			if ( action === 'save' ) {
 				return new OO.ui.Process( () => {
-					const promise = this.settings.save();
+					const promise = this.save();
 					this.pushPending();
 					this.close( promise );
 				} );
@@ -138,13 +103,15 @@ export default function wrapSettingsDialog() {
 
 			if ( action === 'showDefault' ) {
 				return new OO.ui.Process( () => {
-					this.regenUI( 'defaultValue' );
+					this.propertyNameUI = 'defaultValue';
+					this.regenUI();
 				} );
 			}
 
 			if ( action === 'showCurrentSettings' ) {
 				return new OO.ui.Process( () => {
-					this.regenUI( 'value' );
+					this.propertyNameUI = 'value';
+					this.regenUI();
 				} );
 			}
 
@@ -162,7 +129,7 @@ export default function wrapSettingsDialog() {
 
 		getBodyHeight() {
 			return (
-				this.settings.height ||
+				this.height ||
 				this.content.$element.outerWidth( true ) * 1 / 1.61803398875 // golden ratio
 			);
 		}

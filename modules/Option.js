@@ -47,6 +47,7 @@ export default class Option {
 
 	/**
 	 * Return only custom values of option from UI. (called when saving settings. )
+	 * If no UI, return value.
 	 * @return {*} value
 	 */
 	get customUIValue() {
@@ -63,14 +64,17 @@ export default class Option {
 		}
 	}
 
+	/**
+	 * Emit a change event.
+	 */
 	change() {
 		this.emit( 'change' );
 	}
 
-	buildUI( value ) {
+	buildUI() {
 		if ( !this.hide ) {
 			this.hasUI = true;
-			return this.UI( this[ value ] );
+			return this.UI( this[ this.propertyNameUI ] );
 		}
 	}
 

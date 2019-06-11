@@ -1,11 +1,12 @@
 /**
- * @property {(boolean|function)} config.hide
+ * @property {boolean} config.hide
  */
 export default class Group {
 	constructor( config ) {
 		this.header = config.header;
 		this.hide = config.hide;
 		this.options = config.options;
+		this.UIconfig = config.UIconfig || {};
 	}
 
 	/**
@@ -20,5 +21,23 @@ export default class Group {
 			}
 			func( option );
 		} );
+	}
+
+	buildUI() {
+		if ( !this.hide ) {
+			this.hasUI = true;
+			return this.UI();
+		}
+	}
+
+	UI() {
+		this.UIconfig.label = this.header;
+		const fieldset = new OO.ui.FieldsetLayout( this.UIconfig );
+		let fieldLayouts = this.options.map(
+			option => option.buildUI()
+		);
+		fieldLayouts = fieldLayouts.filter( element => element );
+		fieldset.addItems( fieldLayouts );
+		return fieldset;
 	}
 }

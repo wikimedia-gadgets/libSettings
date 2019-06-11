@@ -119,10 +119,15 @@ export default class Settings {
 			}
 
 			// Make the window.
-			this.settingsDialog = new SettingsDialog( {
-				size: this.size,
-				classes: [ 'settingsDialog' ]
-			}, this.optionsConfig );
+			this.settingsDialog = new SettingsDialog(
+				{
+					size: this.size,
+					classes: [ 'libSettings-SettingsDialog' ]
+				},
+				this.optionsConfig,
+				this.save,
+				this.height
+			);
 
 			// Bindings
 			this.optionsConfig.traverse( ( option ) => {

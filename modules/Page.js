@@ -3,7 +3,7 @@
  * @property {string} config.title Header of particular set of preferences
  * @property {string} config.level Indentation level,
  * see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/OO.ui.OutlineOptionWidget
- * @property {(boolean|function)} config.hide Boolean
+ * @property {boolean} config.hide Boolean
  * or function that returns a Boolean.
  * Can use function when a variable is only loaded after the settings is loaded.
  * @property {...libSettings.Option} config.preferences Array of Option objects.
@@ -15,6 +15,7 @@ export default class Page {
 		this.level = config.level;
 		this.hide = config.hide;
 		this.preferences = config.preferences;
+		this.UIconfig = config.UIconfig || {};
 	}
 
 	/**
@@ -33,5 +34,34 @@ export default class Page {
 				func( element );
 			}
 		} );
+	}
+
+	buildUI( singlePage ) {
+		if ( !this.hide ) {
+			this.hasUI = true;
+			return this.UI( singlePage );
+		}
+	}
+
+	UI( singlePage ) {
+		this.UIconfig.padded = singlePage;
+		this.UIconfig.scrollable = false;
+		const page = this;
+
+		class PageUI extends OO.ui.PageLayout {
+			constructor() {
+				super( page.title, page.UIconfig );
+				page.preferences.forEach( ( element ) => {
+					this.$element.append( element.buildUI().$element );
+				} );
+			}
+
+			setupOutlineItem() {
+				this.outlineItem.setLabel( this.element.title );
+				this.outlineItem.setLevel( this.element.level );
+			}
+		}
+
+		return new PageUI();
 	}
 }
