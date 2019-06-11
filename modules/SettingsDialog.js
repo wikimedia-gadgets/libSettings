@@ -6,12 +6,7 @@ export default function wrapSettingsDialog() {
 			this.height = height;
 		}
 
-		get propertyNameUI() {
-			return this.propertyName;
-		}
-
 		set propertyNameUI( newPropertyNameUI ) {
-			this.propertyName = newPropertyNameUI;
 			this.optionsConfig.traverse( ( option ) => {
 				option.propertyNameUI = newPropertyNameUI;
 			} );

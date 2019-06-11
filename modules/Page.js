@@ -57,8 +57,8 @@ export default class Page {
 			}
 
 			setupOutlineItem() {
-				this.outlineItem.setLabel( this.element.title );
-				this.outlineItem.setLevel( this.element.level );
+				this.outlineItem.setLabel( page.title );
+				this.outlineItem.setLevel( page.level );
 			}
 		}
 

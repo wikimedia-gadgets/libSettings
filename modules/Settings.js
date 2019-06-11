@@ -78,8 +78,16 @@ export default class Settings extends OO.EventEmitter {
 			if ( this.notifyUponSave ) {
 				if ( status ) {
 					mw.notify( this.saveMessage );
+					if ( this.reloadUponSave ) {
+						window.location.reload();
+					}
 				} else {
-					mw.notify( this.saveFailMessage );
+					mw.notify(
+						this.saveFailMessage,
+						{
+							autoHide: false
+						}
+					);
 				}
 			}
 		};
@@ -158,9 +166,7 @@ export default class Settings extends OO.EventEmitter {
 
 			this.windowManager.addWindows( [ this.settingsDialog ] );
 			this.windowManager.on( 'closing', () => {
-				if ( this.reloadUponSave ) {
-					window.location.reload();
-				}
+
 			} );
 		}
 

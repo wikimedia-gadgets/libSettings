@@ -1,5 +1,7 @@
-import '../modules/index.js';
-const ls = mw.libs.libSettings;
+/* import '../modules/index.js';
+const ls = mw.libs.libSettings; */
+// eslint-disable-next-line prefer-const
+let ls = mw.libs.libSettings;
 
 const replyLink = new ls.OptionsConfig( [
 	new ls.Page( {
