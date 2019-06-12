@@ -16,11 +16,10 @@ export default class OptionsConfig {
 	}
 
 	/**
-	 * This.config shouldn't be modified. Only options should be modified, using
-	 * traverse to access each option.
 	 * Don't access this.config directly; instead, use getConfig, if necessary to access.
-	 * (the methods given below should likely suffice instead)
-	 * getting should only be used to find information about this.config, not for modification.
+	 * Getting should only be used to find information about this.config, not for modification -
+	 * this.config shouldn't be modified. Only options should be modified, using
+	 * traverse to access each option.
 	 * @returns {Object}
 	*/
 	getConfig() {
@@ -28,7 +27,14 @@ export default class OptionsConfig {
 	}
 
 	/**
-	 *
+	 * FIXME: Don't actually use the ignoreHidden functionality anywhere,
+	 * is it necessary? Would need to remove from Page and Group's traverse
+	 * function too.
+	 * Actually go in and get the options, and create an object
+	 * with references to those options.
+	 * Used on instantiating to create this.options, which is basically
+	 * list of options that is one level deep.
+	 * @private
 	 * @param {function} func
 	 * @param {boolean} ignoreHidden
 	 * @return {Object}

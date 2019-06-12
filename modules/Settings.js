@@ -2,19 +2,19 @@ import wrapSettingsDialog from 'SettingsDialog.js';
 const messages = require( '../i18n/en.json' );
 
 /**
- * @param {Object} settingsConfig
- * @property {string} settingsConfig.scriptName
- * @property {string} [settingsConfig.optionName = scriptName] optionName is the name under which
+ * @param {Object} config
+ * @property {string} config.scriptName
+ * @property {string} [config.optionName = scriptName] optionName is the name under which
  * the options are stored using API:Options.( "userjs-" is prepended to this ).
- * @property {string} settingsConfig.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
- * @property {number} settingsConfig.title
- *
+ * @property {string} config.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
+ * @property {number} config.title
+ * @property {object} config.userOptions If user options are being loaded in another manner
+ * (has to be used alongside config.saveSettings = true)
+ * @property {OptionsConfig} config.optionsConfig
 */
 
 export default class Settings extends OO.EventEmitter {
-	constructor(
-		config
-	) {
+	constructor( config ) {
 		super();
 		mw.messages.set( messages );
 		this.optionsConfig = config.optionsConfig;
@@ -65,40 +65,38 @@ export default class Settings extends OO.EventEmitter {
 		return this.options;
 	}
 
+	notifySave( status ) {
+		if ( this.notifyUponSave ) {
+			if ( status ) {
+				mw.notify( this.saveMessage );
+				if ( this.reloadUponSave ) {
+					window.location.reload();
+				}
+			} else {
+				mw.notify(
+					this.saveFailMessage,
+					{
+						autoHide: false
+					}
+				);
+			}
+		}
+	}
+
 	/** Save settings
 	 * Only saves unique settings, i.e settings that are different from the default
+	 * @fires Settings#endSave Indicates when settings has been saved
+	 * (listened to by settingsDialog).
 	 * @returns {Promise|function}
 	 */
 	save() {
-		const emit = () => {
-			this.emit( 'endSave' );
-		};
-
-		const notifySave = ( status ) => {
-			if ( this.notifyUponSave ) {
-				if ( status ) {
-					mw.notify( this.saveMessage );
-					if ( this.reloadUponSave ) {
-						window.location.reload();
-					}
-				} else {
-					mw.notify(
-						this.saveFailMessage,
-						{
-							autoHide: false
-						}
-					);
-				}
-			}
-		};
-
 		this.newUserOptions = this.optionsConfig.retrieveProperty( 'customUIValue' );
 		if ( this.saveSettings ) {
 			return mw.loader.using( 'mediawiki.api' ).then( () => {
 				this.API = new mw.Api( {
 					ajax: {
 						headers: {
-							'Api-User-Agent': `Script ${this.scriptName} using libSettings.`
+							'Api-User-Agent': `Script ${this.scriptName} using libSettings ([[w:en:MediaWiki:Gadget-libSettings.js]]).`
 						}
 					}
 				} );
@@ -106,15 +104,17 @@ export default class Settings extends OO.EventEmitter {
 					this.optionName,
 					JSON.stringify( this.newUserOptions )
 				).then(
-					() => notifySave( true ),
-					() => notifySave( false )
+					() => this.notifySave( true ),
+					() => this.notifySave( false )
 				).always(
-					() => emit()
+					() => this.emit( 'endSave' )
 				);
 			} );
 		} else {
-			notifySave( true );
-			emit();
+			/**
+			 * User has to manually emit event indicating that settings have been saved
+			 * and run this.notifySave()
+			 */
 			return this.newUserOptions;
 		}
 	}

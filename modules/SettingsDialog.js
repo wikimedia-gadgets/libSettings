@@ -1,4 +1,11 @@
 export default function wrapSettingsDialog() {
+	/**
+	 * @class
+	 * @extends OO.ui.ProcessDialog
+	 * @param {Object} config
+	 * @param {OptionsConfig} optionsConfig
+	 * @param {number} height
+	 */
 	class SettingsDialog extends OO.ui.ProcessDialog {
 		constructor( config, optionsConfig, height ) {
 			super( config );
@@ -93,6 +100,12 @@ export default function wrapSettingsDialog() {
 			}
 		}
 
+		/**
+		 * @param {string} action
+		 * @fires SettingsDialog#startSave Indicates when to start saving settings.
+	 	 * (fired upon pressing save button)
+		 * @returns {OO.ui.Process}
+		 */
 		getActionProcess( action ) {
 			if ( action === 'save' ) {
 				return new OO.ui.Process( () => {
