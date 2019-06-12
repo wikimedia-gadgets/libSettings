@@ -52,7 +52,10 @@ export default class Page {
 			constructor() {
 				super( page.title, page.UIconfig );
 				page.preferences.forEach( ( element ) => {
-					this.$element.append( element.buildUI().$element );
+					const UI = element.buildUI();
+					if ( UI ) {
+						this.$element.append( UI.$element );
+					}
 				} );
 			}
 
