@@ -6,13 +6,12 @@ const messages = require( '../i18n/en.json' );
  * @property {string} config.scriptName
  * @property {string} [config.optionName = scriptName] optionName is the name under which
  * the options are stored using API:Options.( "userjs-" is prepended to this ).
- * @property {string} config.size Same as https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
- * @property {number} config.title
- * @property {object} config.userOptions If user options are being loaded in another manner
+ * @property {string} config.size @see https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
+ * @property {string} config.title
+ * @property {Object} config.userOptions If user options are being loaded in another manner
  * (has to be used alongside config.saveSettings = true)
  * @property {OptionsConfig} config.optionsConfig
 */
-
 export default class Settings extends OO.EventEmitter {
 	constructor( config ) {
 		super();
@@ -83,11 +82,12 @@ export default class Settings extends OO.EventEmitter {
 		}
 	}
 
-	/** Save settings
+	/**
+	 * Save settings
 	 * Only saves unique settings, i.e settings that are different from the default
 	 * @fires Settings#endSave Indicates when settings has been saved
 	 * (listened to by settingsDialog).
-	 * @returns {Promise|function}
+	 * @returns {Promise|Object}
 	 */
 	save() {
 		this.newUserOptions = this.optionsConfig.retrieveProperty( 'customUIValue' );
