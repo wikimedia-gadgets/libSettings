@@ -1,8 +1,9 @@
 import Option from 'Option.js';
+
 /**
  * @extends Option
  */
-export default class TextOption extends Option {
+class TextOption extends Option {
 	constructor( config ) {
 		config.type = config.type || 'Text';
 		super( config );
@@ -37,3 +38,5 @@ export default class TextOption extends Option {
 		return this.UIelement.getValue();
 	}
 }
+
+export default TextOption;

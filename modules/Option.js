@@ -1,18 +1,22 @@
 /**
+ * Represents an option.
  * @abstract
- * @classdesc Represents an option.
- * @param {Object} config
- * @property {string} config.name Name of option. (required)
- * @property {*} config.defaultValue (required)
- * @property {string} config.label Text displayed in settings. (required)
- * @property {string} config.helptip Help text shown in settings.
- * @property {(boolean|function)} config.hide
- * @param {string} type Type of option. Should be same as name of extending class minus
- *  Option at the end (e.g "Color" for "ColorOption" class)
- * @param {...string} basetypes Type(s) to validate against (Defined by extending classes).
+ * @extends OO.EventEmitter
 */
-
-export default class Option extends OO.EventEmitter {
+class Option extends OO.EventEmitter {
+	/**
+	 * @param {Object} config
+	 * @property {string} config.name Name of option. (required)
+	 * @property {*} config.defaultValue (required)
+	 * @property {string} config.label Text displayed in settings. (required)
+	 * @property {string} config.helptip Help text shown in settings.
+	 * @property {(boolean|function)} config.hide
+	 * @property {string} config.type
+	 * Type of option. Should be same as name of extending class minus
+	 * Option at the end (e.g "Color" for "ColorOption" class)
+	 * @property {...string} config.basetypes
+	 * Type(s) to validate against (Defined by extending classes).
+	 */
 	constructor( config ) {
 		super();
 		this.name = config.name;
@@ -83,7 +87,7 @@ export default class Option extends OO.EventEmitter {
 	}
 
 	/**
-	 * @return {OO.ui.element}
+	 * @return {OO.ui.Element}
 	 */
 	buildUI() {
 		if ( !this.hide ) {
@@ -108,3 +112,5 @@ export default class Option extends OO.EventEmitter {
 		return mw.log.error( `Function UI not defined by extending class ${this.type}Option.` );
 	}
 }
+
+export default Option;

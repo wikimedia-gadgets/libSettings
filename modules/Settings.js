@@ -2,17 +2,21 @@ import wrapSettingsDialog from 'SettingsDialog.js';
 const messages = require( '../i18n/en.json' );
 
 /**
- * @param {Object} config
- * @property {string} config.scriptName
- * @property {string} [config.optionName = scriptName] optionName is the name under which
- * the options are stored using API:Options.( "userjs-" is prepended to this ).
- * @property {string} config.size @see https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-static-property-size
- * @property {string} config.title
- * @property {Object} config.userOptions If user options are being loaded in another manner
- * (has to be used alongside config.saveSettings = true)
- * @property {OptionsConfig} config.optionsConfig
-*/
-export default class Settings extends OO.EventEmitter {
+ * @extends OO.EventEmitter
+ */
+class Settings extends OO.EventEmitter {
+	/**
+	 * @param {Object} config
+	 * @property {string} config.scriptName
+	 * @property {string} [config.optionName = scriptName] optionName is the name under which
+	 * the options are stored using API:Options.( "userjs-" is prepended to this ).
+	 * @property {string} config.size An OO.ui.Window size.
+	 * ({@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-cfg-size documentation})
+	 * @property {string} config.title
+	 * @property {Object} config.userOptions If user options are being loaded in another manner
+	 * (has to be used alongside config.saveSettings = true)
+	 * @property {OptionsConfig} config.optionsConfig
+	*/
 	constructor( config ) {
 		super();
 		mw.messages.set( messages );
@@ -89,8 +93,7 @@ export default class Settings extends OO.EventEmitter {
 	/**
 	 * Save settings
 	 * Only saves unique settings, i.e settings that are different from the default
-	 * @fires Settings#endSave Indicates when settings has been saved
-	 * (listened to by settingsDialog).
+	 * @fires Settings#endSave
 	 * @returns {Promise|Object}
 	 */
 	save() {
@@ -111,7 +114,13 @@ export default class Settings extends OO.EventEmitter {
 					() => this.notifySave( true ),
 					() => this.notifySave( false )
 				).always(
-					() => this.emit( 'endSave' )
+					() => {
+						/**
+						 * Indicates that settings has been saved (listened to by settingsDialog).
+						 * @event Settings#endSave
+						 */
+						this.emit( 'endSave' );
+					}
 				);
 			} );
 		} else {
@@ -194,3 +203,5 @@ export default class Settings extends OO.EventEmitter {
 		} );
 	}
 }
+
+export default Settings;

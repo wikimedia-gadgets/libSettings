@@ -2,7 +2,7 @@ import Option from 'Option.js';
 /**
  * @extends Option
  */
-export default class DropdownOption extends Option {
+class DropdownOption extends Option {
 	constructor( config ) {
 		config.type = 'Dropdown';
 		super( config );
@@ -32,3 +32,5 @@ export default class DropdownOption extends Option {
 		return this.UIelement.getValue();
 	}
 }
+
+export default DropdownOption;

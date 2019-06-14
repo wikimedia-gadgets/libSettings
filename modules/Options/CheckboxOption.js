@@ -2,7 +2,7 @@ import Option from 'Option.js';
 /**
  * @extends Option
  */
-export default class CheckboxOption extends Option {
+class CheckboxOption extends Option {
 	constructor( config ) {
 		config.type = 'Checkbox';
 		super( config );
@@ -25,3 +25,5 @@ export default class CheckboxOption extends Option {
 		return this.UIelement.isSelected();
 	}
 }
+
+export default CheckboxOption;

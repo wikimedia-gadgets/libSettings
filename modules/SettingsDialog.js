@@ -4,15 +4,18 @@
  * {@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.ProcessDialog OO.ui.ProcessDialog}.
  * @returns {SettingsDialog}
  */
-export default function wrapSettingsDialog() {
+function wrapSettingsDialog() {
 	/**
-	 * @classdesc This {@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.ProcessDialog OO.ui.ProcessDialog}
+	 * This {@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.ProcessDialog OO.ui.ProcessDialog}
 	 * @private
-	 * @param {Object} config
-	 * @param {OptionsConfig} optionsConfig
-	 * @param {number} height Height of the settings dialog, if overriding default
+	 * @extends OO.ui.ProcessDialog
 	 */
 	class SettingsDialog extends OO.ui.ProcessDialog {
+		/**
+	 	 * @param {Object} config
+	 	 * @param {OptionsConfig} optionsConfig
+	 	 * @param {number} height Height of the settings dialog, if overriding default
+		 */
 		constructor( config, optionsConfig, height ) {
 			super( config );
 			this.optionsConfig = optionsConfig;
@@ -129,13 +132,17 @@ export default function wrapSettingsDialog() {
 		/**
 		 * When a button is pressed, it
 		 * @param {string} action
-		 * @fires SettingsDialog#startSave Indicates when to start saving settings.
-	 	 * (fired upon pressing save button)
+		 * @fires SettingsDialog#startSave
 		 * @returns {OO.ui.Process}
 		 */
 		getActionProcess( action ) {
 			if ( action === 'save' ) {
 				return new OO.ui.Process( () => {
+					/**
+					 * Indicates that settings should be saved now.
+					 * (fired upon pressing save button)
+					 * @event SettingsDialog#startSave
+					 */
 					this.emit( 'startSave' );
 					this.pushPending();
 				} );
@@ -181,3 +188,5 @@ export default function wrapSettingsDialog() {
 
 	return SettingsDialog;
 }
+
+export default wrapSettingsDialog;

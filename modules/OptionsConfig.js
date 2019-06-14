@@ -1,9 +1,11 @@
 /**
  * This class provides the only methods for interacting with OptionsConfig
  * for safety.
- * @param {Array<Page>} config
 */
-export default class OptionsConfig {
+class OptionsConfig {
+	/**
+	 * @param {Array<Page>} config
+	 */
 	constructor( config ) {
 		this.config = config;
 		/**
@@ -93,3 +95,5 @@ export default class OptionsConfig {
 		}
 	}
 }
+
+export default OptionsConfig;

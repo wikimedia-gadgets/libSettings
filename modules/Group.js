@@ -5,7 +5,7 @@
  * @property {Array<Option>} config.options
  * @property {Object} config.UIconfig
  */
-export default class Group {
+class Group {
 	constructor( config ) {
 		this.header = config.header;
 		this.hide = config.hide;
@@ -51,3 +51,5 @@ export default class Group {
 		return fieldset;
 	}
 }
+
+export default Group;

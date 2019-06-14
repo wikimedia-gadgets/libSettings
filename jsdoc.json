@@ -1,9 +1,16 @@
 {
   "opts": {
-    "template": "jsdoc-wmf-theme",
-    "class-hierarchy": { "showList": true }
+    "class-hierarchy": {
+      "showList": true
+    },
+    "recurse": true
   },
   "plugins": [
     "jsdoc-class-hierarchy"
-  ]
+  ],
+  "source": {
+    "include": [
+      "./modules"
+    ]
+  }
 }

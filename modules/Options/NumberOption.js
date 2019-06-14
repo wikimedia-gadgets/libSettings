@@ -1,8 +1,9 @@
 import TextOption from 'Options/TextOption.js';
+
 /**
  * @extends TextOption
  */
-export default class NumberOption extends TextOption {
+class NumberOption extends TextOption {
 	constructor( config ) {
 		config.type = 'Number';
 		super( config );
@@ -13,3 +14,5 @@ export default class NumberOption extends TextOption {
 		return Number( super.UIvalue );
 	}
 }
+
+export default NumberOption;
