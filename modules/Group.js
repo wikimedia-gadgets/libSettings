@@ -1,9 +1,9 @@
 /**
  * @param {Object} config
- * @property {string} config.header
- * @property {boolean} config.hide
- * @property {Array<Option>} config.options
- * @property {Object} config.UIconfig
+ * @param {string} config.header
+ * @param {boolean} config.hide
+ * @param {Array<Option>} config.options
+ * @param {Object} config.UIconfig
  */
 class Group {
 	constructor( config ) {

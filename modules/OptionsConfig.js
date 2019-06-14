@@ -13,6 +13,8 @@ class OptionsConfig {
  	 	 * which allows options can be easily and efficiently iterated.
 	 	 * this.options is an implementation detail of traverse, and retrieveProperty
 	 	 * and should not be depended on (only access optionsConfig through functions).
+		 * @private
+		 * @type {Array}
 		 */
 		this.options = this.depthCopyTraverse();
 	}

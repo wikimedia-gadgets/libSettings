@@ -6,15 +6,15 @@
 class Option extends OO.EventEmitter {
 	/**
 	 * @param {Object} config
-	 * @property {string} config.name Name of option. (required)
-	 * @property {*} config.defaultValue (required)
-	 * @property {string} config.label Text displayed in settings. (required)
-	 * @property {string} config.helptip Help text shown in settings.
-	 * @property {(boolean|function)} config.hide
-	 * @property {string} config.type
+	 * @param {string} config.name Name of option. (required)
+	 * @param {*} config.defaultValue (required)
+	 * @param {string} config.label Text displayed in settings. (required)
+	 * @param {string} config.helptip Help text shown in settings.
+	 * @param {(boolean|function)} config.hide
+	 * @param {string} config.type
 	 * Type of option. Should be same as name of extending class minus
 	 * Option at the end (e.g "Color" for "ColorOption" class)
-	 * @property {...string} config.basetypes
+	 * @param {...string} config.basetypes
 	 * Type(s) to validate against (Defined by extending classes).
 	 */
 	constructor( config ) {
@@ -78,11 +78,14 @@ class Option extends OO.EventEmitter {
 
 	/**
 	 * Emit a change event. Called by {@link Option#UI}
-	 * when the user changes the value of the option in the UI. Listened to by
-	 * {@link SettingsDialog#changeHandler}.
 	 * @fires Option#change
 	 */
 	change() {
+		/**
+		 * Indicates that a user has changed the value of an option in the UI. Listened to by
+		 * {@link SettingsDialog#changeHandler}.
+		 * @event Option#change
+		 */
 		this.emit( 'change' );
 	}
 

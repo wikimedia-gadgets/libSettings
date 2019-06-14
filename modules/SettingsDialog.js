@@ -78,6 +78,7 @@ function wrapSettingsDialog() {
 		 * saveStatus is true
 		 * if all inputs are valid
 		 * and if user changed
+		 * @listens Option#change
 		 */
 		changeHandler() {
 			let validInput = true;

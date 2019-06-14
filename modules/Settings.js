@@ -7,15 +7,15 @@ const messages = require( '../i18n/en.json' );
 class Settings extends OO.EventEmitter {
 	/**
 	 * @param {Object} config
-	 * @property {string} config.scriptName
-	 * @property {string} [config.optionName = scriptName] optionName is the name under which
+	 * @param {string} config.scriptName
+	 * @param {string} [config.optionName = scriptName] optionName is the name under which
 	 * the options are stored using API:Options.( "userjs-" is prepended to this ).
-	 * @property {string} config.size An OO.ui.Window size.
+	 * @param {string} config.size An OO.ui.Window size.
 	 * ({@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-cfg-size documentation})
-	 * @property {string} config.title
-	 * @property {Object} config.userOptions If user options are being loaded in another manner
-	 * (has to be used alongside config.saveSettings = true)
-	 * @property {OptionsConfig} config.optionsConfig
+	 * @param {string} config.title
+	 * @param {Object} config.userOptions If user options are being loaded in another manner
+	 * (has to be used alongside config.useUserOptions = true)
+	 * @param {OptionsConfig} config.optionsConfig
 	*/
 	constructor( config ) {
 		super();
@@ -25,11 +25,11 @@ class Settings extends OO.EventEmitter {
 		this.optionName = `userjs-${config.optionName || config.scriptName}`;
 		this.size = config.size;
 		this.title = config.title || mw.msg( 'libSettings-settings-title' );
-		this.saveSettings = ( config.saveSettings === undefined ) || config.saveSettings;
+		this.useUserOptions = ( config.useUserOptions === undefined ) || config.useUserOptions;
 		this.notifyUponSave = ( config.notifyUponSave !== undefined ) ?
-			config.notifyUponSave : this.saveSettings;
+			config.notifyUponSave : this.useUserOptions;
 		this.reloadUponSave = ( config.reloadUponSave !== undefined ) ?
-			config.reloadUponSave : this.saveSettings;
+			config.reloadUponSave : this.useUserOptions;
 		this.userOptions = config.userOptions || {};
 		this.optionsConfig.traverse( ( option ) => {
 			if ( option.helpInline === undefined ) {
@@ -38,7 +38,7 @@ class Settings extends OO.EventEmitter {
 		} );
 		this.height = config.height;
 
-		this.saveSettingsLabel = config.saveSettingsLabel || mw.msg( 'libSettings-save-label' );
+		this.saveLabel = config.saveLabel || mw.msg( 'libSettings-save-label' );
 		this.cancelLabel = config.cancelLabel || mw.msg( 'libSettings-cancel-label' );
 		this.showDefaultsLabel = config.showDefaultsLabel || mw.msg( 'libSettings-showDefaults-label' );
 		this.showCurrentSettingsLabel = config.showCurrentSettingsLabel || mw.msg( 'libSettings-showCurrentSettings-label' );
@@ -47,20 +47,20 @@ class Settings extends OO.EventEmitter {
 	}
 
 	/**
-	 * Load settings using mw.user.options.get. Called by get() if applicable.
+	 * Load settings using mw.user.options.get. Called by {@link Settings#get} if applicable.
 	 */
 	load() {
 		this.optionsText = mw.user.options.get( this.optionName );
 		this.userOptions = JSON.parse( this.optionsText ) || {};
 	}
 
-	/** Get settings
-	 * @func
+	/**
+	 * Get settings. Calls {@link Settings#load} if {@link Settings#useUserOptions} is true.
 	 * @return {Object} { [optionName]: [optionValue],...}
 	*/
 	get() {
 		if ( !this.options ) {
-			if ( this.saveSettings ) {
+			if ( this.useUserOptions ) {
 				this.load();
 			}
 			this.optionsConfig.updateProperty( 'value', this.userOptions );
@@ -93,12 +93,13 @@ class Settings extends OO.EventEmitter {
 	/**
 	 * Save settings
 	 * Only saves unique settings, i.e settings that are different from the default
+	 * @listens SettingsDialog#startSave
 	 * @fires Settings#endSave
 	 * @returns {Promise|Object}
 	 */
 	save() {
 		this.newUserOptions = this.optionsConfig.retrieveProperty( 'customUIValue' );
-		if ( this.saveSettings ) {
+		if ( this.useUserOptions ) {
 			return mw.loader.using( 'mediawiki.api' ).then( () => {
 				this.API = new mw.Api( {
 					ajax: {
@@ -141,7 +142,7 @@ class Settings extends OO.EventEmitter {
 			SettingsDialog.static.name = 'settingsDialog';
 			SettingsDialog.static.title = this.title;
 			SettingsDialog.static.actions = [
-				{ action: 'save', label: this.saveSettingsLabel, flags: [ 'primary', 'progressive' ] },
+				{ action: 'save', label: this.saveLabel, flags: [ 'primary', 'progressive' ] },
 				{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
 				{ action: 'showDefault', label: this.showDefaultsLabel }
 			];
@@ -163,7 +164,7 @@ class Settings extends OO.EventEmitter {
 				this.height
 			);
 
-			// Bindings
+			// Bind events
 			this.settingsDialog.connect( this, {
 				startSave: 'save'
 			} );
