@@ -1,7 +1,7 @@
 /**
  * This class provides the only methods for interacting with OptionsConfig
  * for safety.
- * @param {Array.<Page>} config
+ * @param {Array<Page>} config
 */
 export default class OptionsConfig {
 	constructor( config ) {

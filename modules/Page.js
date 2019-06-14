@@ -36,6 +36,10 @@ export default class Page {
 		} );
 	}
 
+	/**
+	 * @param {boolean} singlePage Whether there are multiple pages of settings or only one page.
+	 * @return {OO.ui.PageLayout}
+	 */
 	buildUI( singlePage ) {
 		if ( !this.hide ) {
 			this.hasUI = true;
@@ -43,6 +47,10 @@ export default class Page {
 		}
 	}
 
+	/**
+	 * @param {boolean} singlePage
+	 * @return {OO.ui.PageLayout}
+	 */
 	UI( singlePage ) {
 		this.UIconfig.padded = singlePage;
 		this.UIconfig.scrollable = false;

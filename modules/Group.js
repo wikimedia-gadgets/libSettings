@@ -1,5 +1,9 @@
 /**
+ * @param {Object} config
+ * @property {string} config.header
  * @property {boolean} config.hide
+ * @property {Array<Option>} config.options
+ * @property {Object} config.UIconfig
  */
 export default class Group {
 	constructor( config ) {
@@ -23,6 +27,9 @@ export default class Group {
 		} );
 	}
 
+	/**
+	 * @return {OO.ui.FieldsetLayout}
+	 */
 	buildUI() {
 		if ( !this.hide ) {
 			this.hasUI = true;
@@ -30,6 +37,9 @@ export default class Group {
 		}
 	}
 
+	/**
+	 * @return {OO.ui.FieldsetLayout}
+	 */
 	UI() {
 		this.UIconfig.label = this.header;
 		const fieldset = new OO.ui.FieldsetLayout( this.UIconfig );

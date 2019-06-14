@@ -43,6 +43,7 @@ export default class Settings extends OO.EventEmitter {
 	}
 
 	/**
+	 * Load settings using mw.user.options.get. Called by get() if applicable.
 	 */
 	load() {
 		this.optionsText = mw.user.options.get( this.optionName );
@@ -64,6 +65,9 @@ export default class Settings extends OO.EventEmitter {
 		return this.options;
 	}
 
+	/**
+	 * @param {boolean} status
+	 */
 	notifySave( status ) {
 		if ( this.notifyUponSave ) {
 			if ( status ) {
@@ -119,6 +123,9 @@ export default class Settings extends OO.EventEmitter {
 		}
 	}
 
+	/**
+	 * @returns {OO.ui.WindowManager}
+	 */
 	displayMain() {
 		if ( !this.windowManager ) {
 			const SettingsDialog = wrapSettingsDialog();
@@ -175,7 +182,11 @@ export default class Settings extends OO.EventEmitter {
 		return this.windowManager;
 	}
 
+	/**
+	 *@returns {Promise<OO.ui.WindowManager>}
+	 */
 	display() {
+		// Make sure we've loaded the user configured options before displaying the window
 		this.get();
 		// oojs-ui-widgets is needed for BookletLayout
 		return mw.loader.using( [ 'oojs-ui-core', 'oojs-ui-widgets', 'oojs-ui-windows' ] ).then( () => {

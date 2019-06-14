@@ -1,10 +1,16 @@
+/**
+ * This wrapping function exists because until OOUI is loaded,
+ * the class {@link SettingsDialog} cannot be created, as it extends
+ * {@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.ProcessDialog OO.ui.ProcessDialog}.
+ * @returns {SettingsDialog}
+ */
 export default function wrapSettingsDialog() {
 	/**
-	 * @class
-	 * @extends OO.ui.ProcessDialog
+	 * @classdesc This {@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.ProcessDialog OO.ui.ProcessDialog}
+	 * @private
 	 * @param {Object} config
 	 * @param {OptionsConfig} optionsConfig
-	 * @param {number} height
+	 * @param {number} height Height of the settings dialog, if overriding default
 	 */
 	class SettingsDialog extends OO.ui.ProcessDialog {
 		constructor( config, optionsConfig, height ) {
@@ -13,22 +19,32 @@ export default function wrapSettingsDialog() {
 			this.height = height;
 		}
 
-		set propertyNameUI( newPropertyNameUI ) {
+		/**
+		 * @param {string} newPropertyNameUI
+		 */
+		setPropertyNameUI( newPropertyNameUI ) {
 			this.optionsConfig.traverse( ( option ) => {
 				option.propertyNameUI = newPropertyNameUI;
 			} );
 		}
 
+		/**
+		 * @returns {OO.ui.Layout}
+		 */
 		genInternalUI() {
 			const config = this.optionsConfig.getConfig();
-			/* Necessary to determine singlePage here
-			 * as a single page layout needs padding. */
+			/**
+			 * Necessary to determine singlePage here
+			 * as a single page layout needs padding.
+			 */
 			const singlePage = config.filter(
 				page => !page.hide
 			).length === 1;
+
 			const pages = config.map(
 				page => page.buildUI( singlePage )
 			);
+
 			pages.filter( element => element );
 
 			let internalUI;
@@ -46,19 +62,17 @@ export default function wrapSettingsDialog() {
 			return internalUI;
 		}
 
+		/**
+		 * Call {@link SettingsDialog#genInternalUI}
+		 */
 		setupUI() {
 			this.content = this.genInternalUI();
 			this.$body.html( this.content.$element );
 			this.changeHandler();
 		}
 
-		getSetupProcess() {
-			const process = super.getSetupProcess();
-			process.next( () => this.setupUI() );
-			return process;
-		}
-
-		/** saveStatus is true
+		/**
+		 * saveStatus is true
 		 * if all inputs are valid
 		 * and if user changed
 		 */
@@ -89,6 +103,8 @@ export default function wrapSettingsDialog() {
 			} );
 		}
 
+		/**
+		 */
 		regenUI() {
 			let currentPageName;
 			if ( this.content.getCurrentPageName ) {
@@ -101,6 +117,17 @@ export default function wrapSettingsDialog() {
 		}
 
 		/**
+		 * Add {@link SettingsDialog#setupUI} to the setting up process.
+		 * @return {OO.ui.Process}
+		 */
+		getSetupProcess() {
+			const process = super.getSetupProcess();
+			process.next( () => this.setupUI() );
+			return process;
+		}
+
+		/**
+		 * When a button is pressed, it
 		 * @param {string} action
 		 * @fires SettingsDialog#startSave Indicates when to start saving settings.
 	 	 * (fired upon pressing save button)
@@ -116,14 +143,14 @@ export default function wrapSettingsDialog() {
 
 			if ( action === 'showDefault' ) {
 				return new OO.ui.Process( () => {
-					this.propertyNameUI = 'defaultValue';
+					this.setPropertyNameUI( 'defaultValue' );
 					this.regenUI();
 				} );
 			}
 
 			if ( action === 'showCurrentSettings' ) {
 				return new OO.ui.Process( () => {
-					this.propertyNameUI = 'value';
+					this.setPropertyNameUI( 'value' );
 					this.regenUI();
 				} );
 			}
@@ -131,12 +158,19 @@ export default function wrapSettingsDialog() {
 			return super.getActionProcess( action );
 		}
 
+		/**
+		 * @param {*} data
+		 * @return {OO.ui.Process}
+		 */
 		getHoldProcess( data ) {
 			const process = super.getHoldProcess( data );
 			process.next( () => this.popPending() );
 			return process;
 		}
 
+		/**
+		 * @return {number}
+		 */
 		getBodyHeight() {
 			return (
 				this.height ||

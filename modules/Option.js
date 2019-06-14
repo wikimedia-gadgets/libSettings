@@ -1,5 +1,6 @@
-/** Represents an option.
+/**
  * @abstract
+ * @classdesc Represents an option.
  * @param {Object} config
  * @property {string} config.name Name of option. (required)
  * @property {*} config.defaultValue (required)
@@ -35,6 +36,9 @@ export default class Option extends OO.EventEmitter {
 		}
 	}
 
+	/**
+	 * @return {*}
+	 */
 	get value() {
 		if ( this.customValue !== undefined ) {
 			return this.customValue;
@@ -42,7 +46,9 @@ export default class Option extends OO.EventEmitter {
 			return this.defaultValue;
 		}
 	}
-
+	/**
+	 * @param {*} newValue
+	 */
 	set value( newValue ) {
 		this.customValue = newValue;
 	}
@@ -50,7 +56,7 @@ export default class Option extends OO.EventEmitter {
 	/**
 	 * Return only custom values of option from UI. (called when saving settings. )
 	 * If no UI, return value.
-	 * @return {*} value
+	 * @return {*}
 	 */
 	get customUIValue() {
 		let UIValue;
@@ -67,12 +73,18 @@ export default class Option extends OO.EventEmitter {
 	}
 
 	/**
-	 * Emit a change event.
+	 * Emit a change event. Called by {@link Option#UI}
+	 * when the user changes the value of the option in the UI. Listened to by
+	 * {@link SettingsDialog#changeHandler}.
+	 * @fires Option#change
 	 */
 	change() {
 		this.emit( 'change' );
 	}
 
+	/**
+	 * @return {OO.ui.element}
+	 */
 	buildUI() {
 		if ( !this.hide ) {
 			this.hasUI = true;
@@ -80,6 +92,9 @@ export default class Option extends OO.EventEmitter {
 		}
 	}
 
+	/**
+	 * @return {*}
+	 */
 	get UIvalue() {
 		return mw.log.error( `Getter UIvalue not defined by extending class ${this.type}Option.` );
 	}
