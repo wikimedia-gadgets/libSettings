@@ -145,6 +145,10 @@ function wrapSettingsDialog() {
 					 * @event SettingsDialog#startSave
 					 */
 					this.emit( 'startSave' );
+					/**
+					 * FIXME also disable showDefault and showCurrentSettings buttons
+					 * ( kinda like VE does ) or all buttons?
+					 */
 					this.pushPending();
 				} );
 			}
@@ -167,6 +171,7 @@ function wrapSettingsDialog() {
 		}
 
 		/**
+		 * FIXME: is this necessary? if closing right after no need to pop pending
 		 * @param {*} data
 		 * @return {OO.ui.Process}
 		 */
