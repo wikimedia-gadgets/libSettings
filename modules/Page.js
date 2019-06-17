@@ -1,3 +1,6 @@
+/**
+ * A Page of options.
+ */
 class Page {
 	/**
 	 * @param {Object} config

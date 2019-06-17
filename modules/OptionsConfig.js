@@ -48,11 +48,16 @@ class OptionsConfig {
 		const copy = function ( option ) {
 			options[ option.name ] = option;
 		};
-		this.config.forEach( ( page ) =>
-			( page.hide && ignoreHidden ) ?
-				undefined :
-				page.traverse( copy, ignoreHidden )
-		);
+		this.config.forEach( ( page ) => {
+			/**
+			 * Don't do anything if ignoreHidden is true
+			 * and the page is hidden.
+			 */
+			if ( ignoreHidden && page.hide ) {
+				return;
+			}
+			page.traverse( copy, ignoreHidden );
+		} );
 		return options;
 	}
 

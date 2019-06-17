@@ -1,11 +1,14 @@
 /**
- * @param {Object} config
- * @param {string} config.header
- * @param {boolean} config.hide
- * @param {Array<Option>} config.options
- * @param {Object} config.UIconfig
+ * A Group of options.
  */
 class Group {
+	/**
+	 * @param {Object} config
+	 * @param {string} config.header
+	 * @param {boolean} config.hide
+	 * @param {Array<Option>} config.options
+	 * @param {Object} config.UIconfig
+	 */
 	constructor( config ) {
 		this.header = config.header;
 		this.hide = config.hide;
