@@ -100,30 +100,28 @@ class Settings extends OO.EventEmitter {
 	save() {
 		this.newUserOptions = this.optionsConfig.retrieveProperty( 'customUIValue' );
 		if ( this.useUserOptions ) {
-			return mw.loader.using( 'mediawiki.api' ).then( () => {
-				this.API = new mw.Api( {
-					ajax: {
-						headers: {
-							'Api-User-Agent': `Script ${this.scriptName} using libSettings ([[w:en:MediaWiki:Gadget-libSettings.js]]).`
-						}
+			this.API = new mw.Api( {
+				ajax: {
+					headers: {
+						'Api-User-Agent': `Script ${this.scriptName} using libSettings ([[w:en:MediaWiki:Gadget-libSettings.js]]).`
 					}
-				} );
-				return this.API.saveOption(
-					this.optionName,
-					JSON.stringify( this.newUserOptions )
-				).then(
-					() => this.notifySave( true ),
-					() => this.notifySave( false )
-				).always(
-					() => {
-						/**
+				}
+			} );
+			return this.API.saveOption(
+				this.optionName,
+				JSON.stringify( this.newUserOptions )
+			).then(
+				() => this.notifySave( true ),
+				() => this.notifySave( false )
+			).always(
+				() => {
+					/**
 						 * Indicates that settings has been saved (listened to by settingsDialog).
 						 * @event Settings#endSave
 						 */
-						this.emit( 'endSave' );
-					}
-				);
-			} );
+					this.emit( 'endSave' );
+				}
+			);
 		} else {
 			/**
 			 * User has to manually emit event indicating that settings have been saved

@@ -3,5 +3,14 @@
 	"version": "0.2.0",
 	"author": "Galobtter",
 	"license-name": "MIT",
+	"ResourceModules": {
+		"ext.libsettings": {
+			"scripts": "dist/index.js",
+			"dependancies": [
+				"mediawiki.user",
+				"mediawiki.api"
+			]
+		}
+	},
 	"manifest_version": 2
 }

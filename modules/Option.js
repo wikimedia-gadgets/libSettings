@@ -108,6 +108,7 @@ class Option extends OO.EventEmitter {
 
 	/**
 	 * Create UI.
+	 * @protected
 	 * @param {any} value
 	 * @return {OO.ui.element}
 	 */
