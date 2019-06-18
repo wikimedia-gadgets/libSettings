@@ -8,7 +8,8 @@
 			"scripts": "dist/index.js",
 			"dependancies": [
 				"mediawiki.user",
-				"mediawiki.api"
+				"mediawiki.api",
+				"oojs"
 			]
 		}
 	},

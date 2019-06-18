@@ -8,9 +8,7 @@ import DateOption from 'Options/DateOption.js';
 import TextOption from 'Options/TextOption.js';
 import NumberOption from 'Options/NumberOption.js';
 import DropdownOption from 'Options/DropdownOption.js';
-mw.util.addCSS( `.libSettings-NumberOption {
-	max-width: 15em
-}` );
+
 mw.libs.libSettings = {};
 mw.libs.libSettings.Option = Option;
 mw.libs.libSettings.Settings = Settings;
@@ -22,3 +20,11 @@ mw.libs.libSettings.DateOption = DateOption;
 mw.libs.libSettings.TextOption = TextOption;
 mw.libs.libSettings.NumberOption = NumberOption;
 mw.libs.libSettings.DropdownOption = DropdownOption;
+
+// Only to work as a gadget
+const messages = require( '../i18n/en.json' );
+mw.messages.set( messages );
+
+mw.util.addCSS( `.libSettings-NumberOption {
+	max-width: 15em
+}` );

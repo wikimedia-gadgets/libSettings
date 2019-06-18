@@ -1,5 +1,4 @@
 import wrapSettingsDialog from 'SettingsDialog.js';
-const messages = require( '../i18n/en.json' );
 
 /**
  * @extends OO.EventEmitter
@@ -19,7 +18,6 @@ class Settings extends OO.EventEmitter {
 	*/
 	constructor( config ) {
 		super();
-		mw.messages.set( messages );
 		this.optionsConfig = config.optionsConfig;
 		this.scriptName = config.scriptName;
 		this.optionName = `userjs-${config.optionName || config.scriptName}`;
