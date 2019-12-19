@@ -1,0 +1,32 @@
+{
+  "name": "libsettings",
+  "version": "0.2.0",
+  "description": "Gadget for creating a settings dialog and managing settings",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/galobtter/libSettings.git"
+  },
+  "author": "Galobtter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/galobtter/libSettings/issues"
+  },
+  "homepage": "https://github.com/galobtter/libSettings#readme",
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "babel-loader": "^8.0.6",
+    "babel-preset-env": "^1.7.0",
+    "eslint-config-wikimedia": "^0.15.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  }
+}
