@@ -36,14 +36,13 @@ class OptionsConfig {
 	 * function too.
 	 * Actually go in and get the options, and create an object
 	 * with references to those options.
-	 * Used on instantiating to create this.options, which is basically
+	 * Used on instantiating to create this.options, which is a
 	 * list of options that is one level deep.
 	 * @private
-	 * @param {function} func
 	 * @param {boolean} ignoreHidden
 	 * @return {Object}
 	 */
-	depthCopyTraverse( func, ignoreHidden ) {
+	depthCopyTraverse( ignoreHidden ) {
 		const options = {};
 		const copy = function ( option ) {
 			options[ option.name ] = option;
@@ -73,8 +72,9 @@ class OptionsConfig {
 
 	/**
 	 * Retrieve a property from every option.
-	 * For example, you can retrieve the default value of every option
-	 * using retrieveProperty( 'defaultValue' ).
+	 * @example
+	 * // Retrieve the default value of every option
+	 * retrieveProperty( 'defaultValue' )
 	 * @param {string} propertyName
 	 * @returns {Object} {option.name: option.propertyName,...}
 	 */
@@ -88,7 +88,10 @@ class OptionsConfig {
 	}
 
 	/**
-	 * Update's every option's property.
+	 * Updates a property of desired options.
+	 * @example
+	 * // Update the value of the option "AutoReload"
+	 * updateProperty( 'value', {AutoReload: false})
 	 * @param {string} propertyName
 	 * @param {Object} newPropertyValues {option.name: newPropertyValue,...}
 	 */

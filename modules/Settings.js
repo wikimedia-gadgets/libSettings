@@ -1,10 +1,15 @@
 import wrapSettingsDialog from 'SettingsDialog.js';
 
 /**
+ * Primary functions used here will be Settings.get to get the user options and
+ * Settings.display to display the settings.
  * @extends OO.EventEmitter
  */
 class Settings extends OO.EventEmitter {
 	/**
+	 * Can configure saveLabel, cancelLabel, showDefaultsLabel, and showCurrentSettingsLabel
+	 * if using dialog for other purpose like initial configuration for an action.
+	 * (Like for shortdesc helper setup for semi-automated adding of short descriptions).
 	 * @param {Object} config
 	 * @param {string} config.scriptName
 	 * @param {string} [config.optionName = scriptName] optionName is the name under which
@@ -53,7 +58,9 @@ class Settings extends OO.EventEmitter {
 	}
 
 	/**
-	 * Get settings. Calls {@link Settings#load} if {@link Settings#useUserOptions} is true.
+	 * Get settings.
+	 * Calls {@link Settings#load} if {@link Settings#useUserOptions} is true
+	 * and settings haven't previously been loaded.
 	 * @return {Object} { [optionName]: [optionValue],...}
 	*/
 	get() {
@@ -90,7 +97,8 @@ class Settings extends OO.EventEmitter {
 
 	/**
 	 * Save settings
-	 * Only saves unique settings, i.e settings that are different from the default
+	 * Automatically called when the save button is clicked.
+	 * Only saves unique settings, i.e settings that are different from the default.
 	 * @listens SettingsDialog#startSave
 	 * @fires Settings#endSave
 	 * @returns {Promise|Object}
@@ -130,6 +138,7 @@ class Settings extends OO.EventEmitter {
 	}
 
 	/**
+	 * @private
 	 * @returns {OO.ui.WindowManager}
 	 */
 	displayMain() {
