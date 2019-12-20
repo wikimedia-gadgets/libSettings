@@ -74,7 +74,7 @@ class OptionsConfig {
 	 * Retrieve a property from every option.
 	 * @example
 	 * // Retrieve the default value of every option
-	 * retrieveProperty( 'defaultValue' )
+	 * optionsConfig.retrieveProperty( 'defaultValue' )
 	 * @param {string} propertyName
 	 * @returns {Object} {option.name: option.propertyName,...}
 	 */
@@ -90,8 +90,11 @@ class OptionsConfig {
 	/**
 	 * Updates a property of desired options.
 	 * @example
-	 * // Update the value of the option "AutoReload"
-	 * updateProperty( 'value', {AutoReload: false})
+	 * // Update the value of the option "InputWidth"
+	 * optionsConfig.updateProperty( 'value', {InputWidth: false})
+	 * @example
+	 * // Set all values to default
+	 * optionsConfig.updateProperty( 'value', optionsConfig.retrieveProperty( 'defaultValue' ))
 	 * @param {string} propertyName
 	 * @param {Object} newPropertyValues {option.name: newPropertyValue,...}
 	 */
