@@ -19,13 +19,9 @@ class Group {
 	/**
 	 * Traverse options
 	 * @param {Function} func
-	 * @param {boolean} ignoreHidden Whether to ignore elements that have element.hide
 	 */
-	traverse( func, ignoreHidden ) {
+	traverse( func ) {
 		this.options.forEach( ( option ) => {
-			if ( ignoreHidden && option.hide ) {
-				return;
-			}
 			func( option );
 		} );
 	}
