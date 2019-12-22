@@ -12,7 +12,9 @@ module.exports = {
 		modules: [ 'modules' ]
 	},
 	optimization: {
-		minimizer: [new UglifyJsPlugin()],
+		minimizer: [new UglifyJsPlugin({
+			parallel: true
+		})]
 	},
 	module: {
 		rules: [
