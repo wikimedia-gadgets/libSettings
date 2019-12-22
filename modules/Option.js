@@ -35,6 +35,10 @@ class Option extends OO.EventEmitter {
 			this.UIconfig.classes.push( libSettingClass ) :
 			libSettingClass;
 		this.validInput = true;
+		/**
+		 * The name of the attribute the option's UI should display when generating the UI.
+		 * Changed when e.g. showing the default value.
+		 */
 		this.propertyNameUI = 'value';
 
 		if ( this.name === undefined || this.defaultValue === undefined ) {

@@ -8,6 +8,9 @@ function wrapSettingsDialog() {
 	/**
 	 * This {@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.ProcessDialog OO.ui.ProcessDialog}
 	 * is the settings window.
+	 * It has four buttons, a save button, a cancel button, a "show defaults" button,
+	 * and a "show current settings" button, and multiple pages of options using
+	 * OO.ui.BookletLayout.
 	 * @private
 	 * @extends OO.ui.ProcessDialog
 	 */
@@ -24,6 +27,8 @@ function wrapSettingsDialog() {
 		}
 
 		/**
+		 * Set the propertyNameUI to e.g. be "defaultValue" when showing default settings
+		 * so that when the UI is regenerated the right values are shown on the UI.
 		 * @param {string} newPropertyNameUI
 		 */
 		setPropertyNameUI( newPropertyNameUI ) {
@@ -67,7 +72,7 @@ function wrapSettingsDialog() {
 		}
 
 		/**
-		 * Call {@link SettingsDialog#genInternalUI}
+		 * Call {@link SettingsDialog#genInternalUI} and set the body to be that
 		 */
 		setupUI() {
 			this.content = this.genInternalUI();
@@ -76,9 +81,8 @@ function wrapSettingsDialog() {
 		}
 
 		/**
-		 * saveStatus is true
-		 * if all inputs are valid
-		 * and if user changed
+		 * Determines if the buttons should be enabled or not
+		 * The save button is enabled if all inputs are valid and if user changed an option
 		 * @listens Option#change
 		 */
 		changeHandler() {
