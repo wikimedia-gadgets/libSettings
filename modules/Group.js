@@ -17,7 +17,7 @@ class Group {
 	}
 
 	/**
-	 * Traverse options
+	 * Run a function on every option of this group.
 	 * @param {Function} func
 	 */
 	traverse( func ) {
@@ -27,6 +27,7 @@ class Group {
 	}
 
 	/**
+	 * @protected
 	 * @return {OO.ui.FieldsetLayout}
 	 */
 	buildUI() {
@@ -37,6 +38,7 @@ class Group {
 	}
 
 	/**
+	 * @private
 	 * @return {OO.ui.FieldsetLayout}
 	 */
 	UI() {

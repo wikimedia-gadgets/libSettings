@@ -7,6 +7,7 @@
 function wrapSettingsDialog() {
 	/**
 	 * This {@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.ProcessDialog OO.ui.ProcessDialog}
+	 * is the settings window.
 	 * @private
 	 * @extends OO.ui.ProcessDialog
 	 */

@@ -19,7 +19,7 @@ class Page {
 	}
 
 	/**
-	 * Traverse preferences
+	 * Run a function on every option of this page.
 	 * @param {Function} func
 	 */
 	traverse( func ) {
@@ -34,7 +34,7 @@ class Page {
 
 	/**
 	 * Create the page's UI if not hidden.
-	 * @private
+	 * @protected
 	 * @param {boolean} singlePage Whether there are multiple pages of settings or only one page.
 	 * @return {OO.ui.PageLayout}
 	 */

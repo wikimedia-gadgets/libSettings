@@ -7,19 +7,28 @@ import wrapSettingsDialog from 'SettingsDialog.js';
  */
 class Settings extends OO.EventEmitter {
 	/**
-	 * Can configure saveLabel, cancelLabel, showDefaultsLabel, and showCurrentSettingsLabel
-	 * if using dialog for other purpose like initial configuration for an action.
-	 * (Like for shortdesc helper setup for semi-automated adding of short descriptions).
 	 * @param {Object} config
-	 * @param {string} config.scriptName
+	 * @param {string} config.title The title of the settings window.
+	 * @param {OptionsConfig} config.optionsConfig OptionsConfig object.
+	 * @param {string} config.scriptName The name of the script using libSettings.
+	 * Used in user agents in API calls and is the default name by which options are saved
+	 * using API:Options. Changing this will mean options under the old name will not be loaded.
+	 * (consider setting config.optionName to the old name if renaming script.)
 	 * @param {string} [config.optionName = scriptName] optionName is the name under which
-	 * the options are stored using API:Options.( "userjs-" is prepended to this ).
-	 * @param {string} config.size An OO.ui.Window size.
+	 * the options are stored using API:Options.
+	 * ("userjs-" is prepended to this as that is required by MediaWiki).
+	 * @param {string} config.size An OO.ui.Window size for the settings window.
 	 * ({@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-cfg-size documentation})
-	 * @param {string} config.title
-	 * @param {Object} config.userOptions If user options are being loaded in another manner
-	 * (has to be used alongside config.useUserOptions = true)
-	 * @param {OptionsConfig} config.optionsConfig
+	 * @param {boolean} config.useUserOptions Whether to load and
+	 * save user options using API:Options. If true,
+	 * @param {Object} config.userOptions The saved user options, if they are being loaded
+	 * in another manner. Has to be used alongside config.useUserOptions = true.
+	 * @param {string} config.saveLabel Can configure saveLabel, cancelLabel,
+	 * showDefaultsLabel, and showCurrentSettingsLabel if using this dialog for another purpose,
+	 * like initial configuration for an action.
+	 * @param {string} config.cancelLabel
+	 * @param {string} config.showDefaultsLabel
+	 * @param {string} config.showCurrentSettingsLabel
 	*/
 	constructor( config ) {
 		super();
@@ -29,10 +38,8 @@ class Settings extends OO.EventEmitter {
 		this.size = config.size;
 		this.title = config.title || mw.msg( 'libSettings-settings-title' );
 		this.useUserOptions = ( config.useUserOptions === undefined ) || config.useUserOptions;
-		this.notifyUponSave = ( config.notifyUponSave !== undefined ) ?
-			config.notifyUponSave : this.useUserOptions;
-		this.reloadUponSave = ( config.reloadUponSave !== undefined ) ?
-			config.reloadUponSave : this.useUserOptions;
+		this.notifyUponSave = ( config.notifyUponSave === undefined ) || config.notifyUponSave;
+		this.reloadUponSave = ( config.reloadUponSave === undefined ) || config.reloadUponSave;
 		this.userOptions = config.userOptions || {};
 		this.optionsConfig.traverse( ( option ) => {
 			if ( option.helpInline === undefined ) {
@@ -59,7 +66,7 @@ class Settings extends OO.EventEmitter {
 
 	/**
 	 * Get settings.
-	 * Calls {@link Settings#load} if {@link Settings#useUserOptions} is true
+	 * Calls {@link Settings#load} if configured to use user options from mw.user.options
 	 * and settings haven't previously been loaded.
 	 * @return {Object} { [optionName]: [optionValue],...}
 	*/
@@ -75,6 +82,8 @@ class Settings extends OO.EventEmitter {
 	}
 
 	/**
+	 * Notifies the user about whether the settings were saved successfully or not.
+	 * Set notifyUponSave to false to disable this.
 	 * @param {boolean} status
 	 */
 	notifySave( status ) {
@@ -98,7 +107,10 @@ class Settings extends OO.EventEmitter {
 	/**
 	 * Save settings
 	 * Automatically called when the save button is clicked.
-	 * Only saves unique settings, i.e settings that are different from the default.
+	 * Only saves settings that are different from the default.
+	 * If useUserOptions, returns the new user options, but actual saving
+	 * or further work is left to the user, who also has to manually emit
+	 * {@link Settings#endSave} once saving is complete and run {@link Settings#notifySave}.
 	 * @listens SettingsDialog#startSave
 	 * @fires Settings#endSave
 	 * @returns {Promise|Object}
@@ -122,22 +134,21 @@ class Settings extends OO.EventEmitter {
 			).always(
 				() => {
 					/**
-						 * Indicates that settings has been saved (listened to by settingsDialog).
+						 * Indicates that settings has been saved. Listened to by settingsDialog
+						 * to know when to close the window.
 						 * @event Settings#endSave
 						 */
 					this.emit( 'endSave' );
 				}
 			);
 		} else {
-			/**
-			 * User has to manually emit event indicating that settings have been saved
-			 * and run this.notifySave()
-			 */
 			return this.newUserOptions;
 		}
 	}
 
 	/**
+	 * Create window if not created already. Create new {@link SettingsDialog}
+	 * and bind relevant events.
 	 * @private
 	 * @returns {OO.ui.WindowManager}
 	 */
@@ -198,7 +209,10 @@ class Settings extends OO.EventEmitter {
 	}
 
 	/**
-	 *@returns {Promise<OO.ui.WindowManager>}
+	 * Display the settings dialog. Bind to a relevant button in your script's
+	 * interface.
+	 * @returns {Promise<OO.ui.WindowManager>} Promise that gives the OO.ui.WindowManager of the
+	 * settings dialog upon resolving.
 	 */
 	display() {
 		// Make sure we've loaded the user configured options before displaying the window

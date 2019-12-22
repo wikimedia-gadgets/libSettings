@@ -41,6 +41,7 @@ class Option extends OO.EventEmitter {
 	}
 
 	/**
+	 * Return either the configured saved user value if it exists or the default value.
 	 * @return {*}
 	 */
 	get value() {
@@ -58,8 +59,9 @@ class Option extends OO.EventEmitter {
 	}
 
 	/**
-	 * Return only custom values of option from UI. (called when saving settings. )
-	 * If no UI, return value.
+	 * Return only the values the user has configured in the UI for each option
+	 * where it is different from the default.
+	 * This is called when saving settings.
 	 * @return {*}
 	 */
 	get customUIValue() {
@@ -90,6 +92,7 @@ class Option extends OO.EventEmitter {
 	}
 
 	/**
+	 * @protected
 	 * @return {OO.ui.Element}
 	 */
 	buildUI() {
@@ -100,6 +103,7 @@ class Option extends OO.EventEmitter {
 	}
 
 	/**
+	 * Defines how to get the value inputed by the user in the UI.
 	 * @return {*}
 	 */
 	get UIvalue() {
@@ -108,7 +112,6 @@ class Option extends OO.EventEmitter {
 
 	/**
 	 * Create UI.
-	 * @protected
 	 * @param {any} value
 	 * @return {OO.ui.element}
 	 */
