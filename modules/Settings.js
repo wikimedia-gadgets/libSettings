@@ -159,7 +159,7 @@ class Settings extends OO.EventEmitter {
 			SettingsDialog.static.title = this.title;
 			SettingsDialog.static.actions = [
 				{ action: 'save', label: this.saveLabel, flags: [ 'primary', 'progressive' ] },
-				{ label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
+				{ action: 'cancel', label: this.cancelLabel, flags: [ 'safe', 'destructive' ] },
 				{ action: 'showDefault', label: this.showDefaultsLabel }
 			];
 

@@ -109,6 +109,7 @@ function wrapSettingsDialog() {
 		}
 
 		/**
+		 * Regenerate the UI upon resetting settings.
 		 */
 		regenUI() {
 			let currentPageName;
@@ -132,7 +133,7 @@ function wrapSettingsDialog() {
 		}
 
 		/**
-		 * When a button is pressed, it
+		 * When a button is pressed, this is called with the action name.
 		 * @param {string} action
 		 * @fires SettingsDialog#startSave
 		 * @returns {OO.ui.Process}
@@ -146,12 +147,18 @@ function wrapSettingsDialog() {
 					 * @event SettingsDialog#startSave
 					 */
 					this.emit( 'startSave' );
-					/**
-					 * FIXME also disable showDefault and showCurrentSettings buttons
-					 * ( kinda like VE does ) or all buttons?
-					 */
+					this.actions.setAbilities( {
+						save: false,
+						showDefault: false,
+						showCurrentSettings: false,
+						cancel: false
+					} );
 					this.pushPending();
 				} );
+			}
+
+			if ( action === 'cancel' ) {
+				this.close();
 			}
 
 			if ( action === 'showDefault' ) {
