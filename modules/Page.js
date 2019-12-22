@@ -4,11 +4,12 @@
 class Page {
 	/**
 	 * @param {Object} config
- 	 * @param {string} config.title Header of particular set of preferences
+ 	 * @param {string} config.title Header of the page of preferences
  	 * @param {string} config.level Indentation level.
  	 * See https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/OO.ui.OutlineOptionWidget.
  	 * @param {boolean} config.hide Whether the page should be hidden.
- 	 * @param {...libSettings.Option} config.preferences Array of Option objects.
+ 	 * @param {...libSettings.Option} config.preferences Array of {@link Option} or {@link Group} objects.
+	 * @param {Object} config.UIconfig Configuration that is passed into the underlying UI.
  	 */
 	constructor( config ) {
 		this.title = config.title;

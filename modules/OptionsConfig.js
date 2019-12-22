@@ -3,7 +3,7 @@
 */
 class OptionsConfig {
 	/**
-	 * @param {Array<Page>} config
+	 * @param {Array<Page>} config Array of page objects delineating the options.
 	 */
 	constructor( config ) {
 		this.config = config;

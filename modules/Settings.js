@@ -8,21 +8,25 @@ import wrapSettingsDialog from 'SettingsDialog.js';
 class Settings extends OO.EventEmitter {
 	/**
 	 * @param {Object} config
-	 * @param {string} config.title The title of the settings window.
-	 * @param {OptionsConfig} config.optionsConfig OptionsConfig object.
+	 * @param {OptionsConfig} config.optionsConfig OptionsConfig object. (required)
 	 * @param {string} config.scriptName The name of the script using libSettings.
 	 * Used in user agents in API calls and is the default name by which options are saved
 	 * using API:Options. Changing this will mean options under the old name will not be loaded.
-	 * (consider setting config.optionName to the old name if renaming script.)
+	 * (consider setting config.optionName to the old name if renaming script.) (required)
+	 * @param {string} config.title The title of the settings window, if it should not be
+	 * "Settings".
 	 * @param {string} [config.optionName = scriptName] optionName is the name under which
 	 * the options are stored using API:Options.
 	 * ("userjs-" is prepended to this as that is required by MediaWiki).
 	 * @param {string} config.size An OO.ui.Window size for the settings window.
 	 * ({@link https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui.Window-cfg-size documentation})
+	 * @param {boolean} config.helpInline The default for whether help text should be inline.
 	 * @param {boolean} config.useUserOptions Whether to load and
-	 * save user options using API:Options. If true,
+	 * save user options using API:Options. If true, saving has to be manually done.
 	 * @param {Object} config.userOptions The saved user options, if they are being loaded
 	 * in another manner. Has to be used alongside config.useUserOptions = true.
+	 * @param {boolean} config.notifyUponSave Whether to notify the user upon saving.
+	 * @param {boolean} config.reloadUponSave Whether to reload the page upon saving.
 	 * @param {string} config.saveLabel Can configure saveLabel, cancelLabel,
 	 * showDefaultsLabel, and showCurrentSettingsLabel if using this dialog for another purpose,
 	 * like initial configuration for an action.

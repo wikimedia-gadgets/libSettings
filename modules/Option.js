@@ -7,27 +7,33 @@ class Option extends OO.EventEmitter {
 	/**
 	 * @param {Object} config
 	 * @param {string} config.name Name of option. (required)
-	 * @param {*} config.defaultValue (required)
+	 * @param {*} config.defaultValue The default value for the option. (required)
 	 * @param {string} config.label Text displayed in settings. (required)
-	 * @param {string} config.helptip Help text shown in settings.
-	 * @param {(boolean|function)} config.hide
+	 * @param {string} config.help Help text shown in settings.
+	 * @param {boolean} config.hide Whether to hide the option.
+	 * @param {boolean} config.helpInline Whether the help text should be inline or not.
+	 * @param {Object} config.UIconfig Configuration that is passed into the underlying UI.
 	 * @param {string} config.type
-	 * Type of option. Should be same as name of extending class minus
-	 * Option at the end (e.g "Color" for "ColorOption" class)
+	 * Type of option. Should be same as name of subclass minus
+	 * Option at the end (e.g "Color" for "ColorOption" class) (Defined by subclasses.)
 	 * @param {...string} config.basetypes
-	 * Type(s) to validate against (Defined by extending classes).
+	 * Type(s) to validate against (Defined by subclasses).
 	 */
 	constructor( config ) {
 		super();
 		this.name = config.name;
 		this.defaultValue = config.defaultValue;
+		this.label = config.label;
 		this.type = config.type;
 		this.UIconfig = config.UIconfig || {};
-		this.label = config.label;
 		this.help = config.help;
 		this.hide = config.hide;
+		this.helpInline = config.helpInline;
 
-		this.UIconfig.classes = [ `libSettings-${this.type}Option` ];
+		const libSettingClass = [ `libSettings-${this.type}Option` ];
+		this.UIconfig.classes = this.UIconfig.classes ?
+			this.UIconfig.classes.push( libSettingClass ) :
+			libSettingClass;
 		this.validInput = true;
 		this.propertyNameUI = 'value';
 
