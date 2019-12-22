@@ -172,17 +172,6 @@ function wrapSettingsDialog() {
 		}
 
 		/**
-		 * FIXME: is this necessary? if closing right after no need to pop pending
-		 * @param {*} data
-		 * @return {OO.ui.Process}
-		 */
-		getHoldProcess( data ) {
-			const process = super.getHoldProcess( data );
-			process.next( () => this.popPending() );
-			return process;
-		}
-
-		/**
 		 * @return {number}
 		 */
 		getBodyHeight() {
