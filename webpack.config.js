@@ -4,6 +4,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 module.exports = {
 	mode: 'development',
 	entry: 'index.js',
+	target: ['web', 'es5'],
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
 		filename: 'index.js'
